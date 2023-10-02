@@ -8,7 +8,7 @@
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
 
-#include "Particle.h"
+#include "Projectile.h"
 
 #include <iostream>
 
@@ -32,7 +32,7 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
-Particle* particle;
+std::vector<Projectile*> projectiles;
 
 
 // Initialize physics engine
@@ -58,9 +58,8 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
-
-	particle = new Particle(Vector3(0, 0, 0), Vector3(1, 1, 0));
-	}
+	
+}
 
 
 // Function to configure what happens in each step of physics
@@ -70,7 +69,16 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 
-	particle->integrate(t);
+	for (auto it = projectiles.begin(); it != projectiles.end();) {
+		if (!(*it)->getDestroy()) {
+			(*it)->integrate(t); ++it;
+		}
+		else
+		{
+			delete (*it);
+			it = projectiles.erase(it);
+		}
+	}
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -82,8 +90,10 @@ void cleanupPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
 
-	delete particle;
-
+	for (int i = 0; i < projectiles.size(); ++i) {
+		delete projectiles[i];
+	}
+	delete[] &projectiles;
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
 	gDispatcher->release();
@@ -107,6 +117,8 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case ' ':
 	{
+		Projectile* projectile = new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 0.2f, Projectile::Type::Bullet);
+		projectiles.push_back(projectile);
 		break;
 	}
 	default:
