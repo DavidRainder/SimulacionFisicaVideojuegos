@@ -7,6 +7,7 @@ public:
 	Particle(Vector3 Pos, Vector3 vel, Vector3 acc, float scale = 1, float damping = 0.98f);
 	virtual ~Particle() {
 		if (rI != nullptr) rI->release();
+		rI = nullptr;
 	}
 	virtual void integrate(double t);
 	inline bool getDestroy() { return destroy; }

@@ -93,7 +93,9 @@ void cleanupPhysics(bool interactive)
 	for (int i = 0; i < projectiles.size(); ++i) {
 		delete projectiles[i];
 	}
-	delete[] &projectiles;
+
+	projectiles.clear();
+
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
 	gDispatcher->release();
