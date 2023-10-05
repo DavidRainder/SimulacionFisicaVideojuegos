@@ -23,6 +23,5 @@ protected:
 	float maxTimeAlive;
 	const float realGrav = -9.8f;
 	float mass, grav, speed, realMass, realSpeed;
-
 };
 

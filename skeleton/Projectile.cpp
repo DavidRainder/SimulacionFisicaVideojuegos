@@ -37,5 +37,4 @@ void Projectile::integrate(double t) {
 	if (timer > maxTimeAlive) {
 		Destroy();
 	}
-	std::cout << timer << ' ' << t << '\n';
 }
