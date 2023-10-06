@@ -13,6 +13,6 @@ Particle::Particle(Vector3 pos, Vector3 vel, Vector3 acc, float scale, float dam
 
 void Particle::integrate(double t) {
 	pose.p += vel * t;
-	vel += acc * t;
+	vel += acc * t + g*t;
 	vel *= pow(damping,t);
 }
