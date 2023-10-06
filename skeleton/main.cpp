@@ -117,8 +117,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 	//case 'B': break;
 	//case ' ':	break;
-	case ' ':
+	case 'B':
 	{
+		Projectile* projectile = new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 0.2f, Projectile::Type::Bullet);
+		projectiles.push_back(projectile);
+		break;
+	}
+	case 'C': {
 		Projectile* projectile = new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 0.2f, Projectile::Type::Canonball);
 		projectiles.push_back(projectile);
 		break;
