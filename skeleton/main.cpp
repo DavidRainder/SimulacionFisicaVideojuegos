@@ -33,6 +33,7 @@ PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
 std::vector<Projectile*> projectiles;
+std::vector<Particle*> particles;
 
 
 // Initialize physics engine
@@ -58,7 +59,7 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
-	
+
 }
 
 
@@ -78,6 +79,10 @@ void stepPhysics(bool interactive, double t)
 			delete (*it);
 			it = projectiles.erase(it);
 		}
+	}
+
+	for (auto it = particles.begin(); it != particles.end(); ++it) {
+		(*it)->integrate(t);
 	}
 
 	gScene->simulate(t);
@@ -126,6 +131,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'C': {
 		Projectile* projectile = new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 0.2f, Projectile::Type::Canonball);
 		projectiles.push_back(projectile);
+		break;
+	}
+	case 'P': {
+		particles.push_back(new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 10, { 0,0,0 }, 1.0f, 0.98f));
 		break;
 	}
 	default:
