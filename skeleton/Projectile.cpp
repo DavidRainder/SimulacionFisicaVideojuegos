@@ -2,8 +2,7 @@
 #include <iostream>
 
 Projectile::Projectile(Vector3 pos, Vector3 dir, float scale, Type pType, float scaleSpeed, float maxTimeAlive) : 
-	Particle(pos, Vector3(0, 0, 0), Vector3(0, 0, 0), scale, 0.98f, maxTimeAlive) {
-	this->maxTimeAlive = maxTimeAlive;
+	Particle(pos, Vector3(0, 0, 0), Vector3(0, 0, 0), 0.0f, scale, 0.98f, maxTimeAlive) {
 	switch (pType) {
 	case Type::Canonball: { // cannonball (heavy)
 		// real ----

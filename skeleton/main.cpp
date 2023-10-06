@@ -81,8 +81,15 @@ void stepPhysics(bool interactive, double t)
 		}
 	}
 
-	for (auto it = particles.begin(); it != particles.end(); ++it) {
-		(*it)->integrate(t);
+	for (auto it = particles.begin(); it != particles.end();) {
+		if ((*it)->getDestroy()) {
+			delete (*it);
+			it = particles.erase(it);
+		}
+		else {
+			(*it)->integrate(t);
+			++it;
+		}
 	}
 
 	gScene->simulate(t);
@@ -134,7 +141,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	}
 	case 'P': {
-		particles.push_back(new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 10, { 0,0,0 }, 1.0f, 0.98f));
+		particles.push_back(new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 10, { 0,0,0 }, -0.6f, 1.0f, 0.98f, 3.0f));
 		break;
 	}
 	default:

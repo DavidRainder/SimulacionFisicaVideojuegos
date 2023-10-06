@@ -15,11 +15,11 @@ protected:
 		// grav = realGrav * pow((speed / realSpeed), 2); La fórmula real es esta: (vSim/vReal)^2, pero si aplicamos esto la bala 
 		// tarda mucho tiempo en caer. He modificado la fórmula quitando el ^2 para que genere valores que se acerquen más al
 		// resultado que queremos simular
-		grav = realGrav * (speed / realSpeed);
-		acc += Vector3(0,1,0) * grav;
+		g = realGrav * (speed / realSpeed);
+		acc += Vector3(0,1,0) * g;
 	}
 	
 	const float realGrav = -9.8f;
-	float mass, grav, speed, realMass, realSpeed;
+	float mass, speed, realMass, realSpeed;
 };
 
