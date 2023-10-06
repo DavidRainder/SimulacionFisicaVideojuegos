@@ -19,8 +19,6 @@ protected:
 		acc += Vector3(0,1,0) * grav;
 	}
 	
-	float timer = 0;
-	float maxTimeAlive;
 	const float realGrav = -9.8f;
 	float mass, grav, speed, realMass, realSpeed;
 };

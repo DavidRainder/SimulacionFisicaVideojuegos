@@ -1,7 +1,8 @@
 #include "Projectile.h"
 #include <iostream>
 
-Projectile::Projectile(Vector3 pos, Vector3 dir, float scale, Type pType, float scaleSpeed, float maxTimeAlive) : Particle(pos, Vector3(0, 0, 0), Vector3(0, 0, 0), scale, 0.98f) {
+Projectile::Projectile(Vector3 pos, Vector3 dir, float scale, Type pType, float scaleSpeed, float maxTimeAlive) : 
+	Particle(pos, Vector3(0, 0, 0), Vector3(0, 0, 0), scale, 0.98f, maxTimeAlive) {
 	this->maxTimeAlive = maxTimeAlive;
 	switch (pType) {
 	case Type::Canonball: { // cannonball (heavy)
@@ -33,8 +34,4 @@ Projectile::Projectile(Vector3 pos, Vector3 dir, float scale, Type pType, float 
 
 void Projectile::integrate(double t) {
 	Particle::integrate(t);
-	timer += t;
-	if (timer > maxTimeAlive) {
-		Destroy();
-	}
 }
