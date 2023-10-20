@@ -9,6 +9,7 @@
 #include "callbacks.hpp"
 
 #include "Projectile.h"
+#include "ParticleSystem.h"
 
 #include <iostream>
 
@@ -34,6 +35,8 @@ ContactReportCallback gContactReportCallback;
 
 std::vector<Projectile*> projectiles;
 std::vector<Particle*> particles;
+ParticleSystem* _pS;
+
 
 
 // Initialize physics engine
@@ -60,6 +63,9 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
+	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
+
+	_pS = new ParticleSystem(Vector3(0,0,0), Vector3( 0,50,0 ), Vector3(5,10,5));
 }
 
 
@@ -70,27 +76,34 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 
-	for (auto it = projectiles.begin(); it != projectiles.end();) {
-		if (!(*it)->getDestroy()) {
-			(*it)->integrate(t); ++it;
-		}
-		else
-		{
-			delete (*it);
-			it = projectiles.erase(it);
-		}
-	}
+	_pS->update(t);
 
-	for (auto it = particles.begin(); it != particles.end();) {
-		if ((*it)->getDestroy()) {
-			delete (*it);
-			it = particles.erase(it);
-		}
-		else {
-			(*it)->integrate(t);
-			++it;
-		}
-	}
+#pragma region projectiles
+	//for (auto it = projectiles.begin(); it != projectiles.end();) {
+	//	if (!(*it)->getDestroy()) {
+	//		(*it)->integrate(t); ++it;
+	//	}
+	//	else
+	//	{
+	//		delete (*it);
+	//		it = projectiles.erase(it);
+	//	}
+	//}
+#pragma endregion
+
+#pragma region particles
+	//for (auto it = particles.begin(); it != particles.end();) {
+	//	if ((*it)->getDestroy()) {
+	//		delete (*it);
+	//		it = particles.erase(it);
+	//	}
+	//	else {
+	//		(*it)->integrate(t);
+	//		++it;
+	//	}
+	//}
+#pragma endregion
+
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -141,7 +154,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	}
 	case 'P': {
-		particles.push_back(new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 10, { 0,0,0 }, -0.6f, 1.0f, 0.98f, 3.0f));
+		particles.push_back(new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 10, { 0,0,0 }, true, 1.0f, 0.98f, 3.0f));
 		break;
 	}
 	default:
