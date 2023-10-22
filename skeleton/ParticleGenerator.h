@@ -56,11 +56,12 @@ protected:
 
 class FireworkExplosionGenerator : public ParticleGenerator {
 public:
-	FireworkExplosionGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos, int numParticles);
+	FireworkExplosionGenerator(int generation, std::string name, Vector3 avgSpeed, Vector3 avgPos, int numParticles);
 
 	std::list<Particle*> generateParticles(double t);
 
 protected:
+	int generation;
 	int numParticles;
 };
 
@@ -71,6 +72,6 @@ public:
 	std::list<Particle*> generateParticles(double t);
 
 private:
-	const float timeTillNextParticle = 1.0f;
+	const float timeTillNextParticle = 0.33f;
 	float currentTime = 0;
 };

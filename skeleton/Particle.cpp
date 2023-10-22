@@ -29,32 +29,45 @@ void Particle::integrate(double t) {
 	}
 }
 
-Firework::Firework(Vector3 Pos, Vector3 vel, Vector3 acc, bool usesGravity, float gravity, float scale, float damping, float maxTimeAlive)
+Firework::Firework(int generation, Vector3 Pos, Vector3 vel, Vector3 acc, bool usesGravity, float gravity, float scale, float damping, float maxTimeAlive)
 	: Particle(Pos, vel, acc, { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }, usesGravity, gravity,
-		scale, damping, maxTimeAlive) {
-	generatesParticles = true;
-	this->_pC = new Particle_config(Pos, vel, acc, damping, maxTimeAlive, scale, usesGravity, gravity);
-	generator = new FireworkExplosionGenerator("Firework " + std::to_string(Pos.x + acc.x), { 50,50,50 }, Pos, 50);
-	generator->setParticleModel(this->_pC);
+		scale, damping, maxTimeAlive), generation(generation) {
+	if (generation != 0) {
+		generatesParticles = true;
+		this->_pC = new Particle_config(Pos, vel, acc, damping, maxTimeAlive * 0.7f, scale, usesGravity, gravity);
+		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(Pos.x + acc.x), { 50,50,50 }, Pos, 20);
+		generator->setParticleModel(this->_pC);
+	}
 };
 
-Firework::Firework(Vector3 Pos, Vector3 vel, Vector3 acc, Vector4 color, bool usesGravity, float gravity, float scale, float damping, float maxTimeAlive)
+Firework::Firework(int generation, Vector3 Pos, Vector3 vel, Vector3 acc, Vector4 color, bool usesGravity, float gravity, float scale, float damping, float maxTimeAlive)
 	: Particle(Pos, vel, acc, { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }, usesGravity, gravity,
-		scale, damping, maxTimeAlive) {
-	generatesParticles = true;
-	this->_pC = new Particle_config(Pos, vel, acc, damping, maxTimeAlive, scale, usesGravity, gravity, color);
-	generator = new FireworkExplosionGenerator("Firework " + std::to_string(Pos.x + acc.x), { 50,50,50 }, Pos, 50);
-	generator->setParticleModel(this->_pC);
+		scale, damping, maxTimeAlive), generation(generation) {
+	if (generation != 0) {
+		generatesParticles = true;
+		this->_pC = new Particle_config(Pos, vel, acc, damping, maxTimeAlive * 0.7f, scale, usesGravity, gravity, color);
+		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(Pos.x + acc.x), { 50,50,50 }, Pos, 20);
+		generator->setParticleModel(this->_pC);
+	}
 };
 
-Firework::Firework(Particle_config& _pC) : Particle(_pC.pos, _pC.vel, _pC.acc, _pC.color, _pC.usesGravity, _pC.g, _pC.scale, _pC.damping, _pC.maxTimeAlive) {
-	generatesParticles = true;
-	this->_pC = new Particle_config(_pC);
-	generator = new FireworkExplosionGenerator("Firework " + std::to_string(_pC.pos.x + acc.x), { 50,50,50 }, _pC.pos, 50);
-	generator->setParticleModel(this->_pC);
+Firework::Firework(int generation, Particle_config& _pC) : 
+	Particle(_pC.pos, _pC.vel, _pC.acc, _pC.color, _pC.usesGravity, _pC.g, _pC.scale, _pC.damping, _pC.maxTimeAlive * 0.7f), generation(generation) {
+	if (generation != 0) {
+		generatesParticles = true;
+		this->_pC = new Particle_config(_pC);
+		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(_pC.pos.x + acc.x), { 50,50,50 }, _pC.pos, 20);
+		generator->setParticleModel(this->_pC);
+	}
 };
 
 void Firework::Destroy() {
 	Particle::Destroy();
-	generator->changePos(pose.p);
+	if(generation != 0) generator->changePos(pose.p);
+}
+
+void Firework::integrate(double t) {
+	Particle::integrate(t);
+	// hacer fade
+	// rI->color.w -= 0.01f * t;
 }

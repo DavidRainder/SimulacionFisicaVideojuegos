@@ -3,7 +3,6 @@
 
 class ParticleGenerator;
 
-
 struct Particle_config {
 	Vector3 pos, vel, acc;
 	float damping, maxTimeAlive, g, scale;
@@ -64,12 +63,14 @@ protected:
 
 class Firework : public Particle {
 public:
-	Firework(Vector3 Pos, Vector3 vel, Vector3 acc, bool usesGravity = false, float gravity = -9.8f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
-	Firework(Vector3 Pos, Vector3 vel, Vector3 acc, Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }, bool usesGravity = false, float gravity = -9.8f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
-	Firework(Particle_config& _pC);
+	Firework(int generation, Vector3 Pos, Vector3 vel, Vector3 acc, bool usesGravity = false, float gravity = -9.8f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
+	Firework(int generation, Vector3 Pos, Vector3 vel, Vector3 acc, Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }, bool usesGravity = false, float gravity = -9.8f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
+	Firework(int generation, Particle_config& _pC);
 
+	void integrate(double t);
 protected:
 	Particle_config* _pC;
+	int generation;
 
 	virtual void Destroy();
 };

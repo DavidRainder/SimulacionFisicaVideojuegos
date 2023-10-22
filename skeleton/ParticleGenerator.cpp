@@ -17,8 +17,8 @@ GaussianParticleGenerator::GaussianParticleGenerator(std::string name, Vector3 a
 	vZ = new std::normal_distribution<float>(avgSpeed.z, variation.z);
 }
 
-FireworkExplosionGenerator::FireworkExplosionGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos, int numParticles)
-	: ParticleGenerator(name, avgSpeed, avgPos), numParticles(numParticles) {}
+FireworkExplosionGenerator::FireworkExplosionGenerator(int generation, std::string name, Vector3 avgSpeed, Vector3 avgPos, int numParticles)
+	: ParticleGenerator(name, avgSpeed, avgPos), numParticles(numParticles), generation(generation) {}
 
 std::list<Particle*> FireworkExplosionGenerator::generateParticles(double t) {
 	std::list<Particle*> _list;
@@ -27,7 +27,7 @@ std::list<Particle*> FireworkExplosionGenerator::generateParticles(double t) {
 		model->pos = _avgPos;
 		model->vel = (Vector3((float)(rand() % 100 - 50),
 			(float)(rand() % 100 - 50), (float)(rand() % 100 - 50))).getNormalized() * 30;
-		_list.push_back(new Particle(*model));
+		_list.push_back(new Firework(generation,*model));
 	}
 	Destroy();
 
@@ -43,7 +43,7 @@ std::list<Particle*> FireworkGenerator::generateParticles(double t) {
 		auto model = models[rand() % models.size()];
 		model->vel = Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen));
 		model->pos = _avgPos;
-		Particle* newParticle = new Firework(*model);
+		Particle* newParticle = new Firework(2, *model);
 		_list.push_back(newParticle);
 		currentTime = 0;
 	}
