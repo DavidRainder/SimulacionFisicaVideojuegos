@@ -35,7 +35,9 @@ ContactReportCallback gContactReportCallback;
 
 std::vector<Projectile*> projectiles;
 std::vector<Particle*> particles;
+GaussianParticleGenerator* gen;
 ParticleSystem* _pS;
+
 
 
 
@@ -65,7 +67,13 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	_pS = new ParticleSystem(Vector3(0,0,0), Vector3( 0,50,0 ), Vector3(5,10,5));
+	gen = new FireworkGenerator("Gaussian1", { 0,50,0 }, { 0,0,0 }, { 1,10,1 });
+	_pS = new ParticleSystem();
+	gen->setParticleModel(new Particle_config(0.998f, 3.0f, 1.0f, true, -9.8f));
+	gen->setParticleModel(new Particle_config(0.998f, 3.0f, 1.0f, true, -9.8f));
+	gen->setParticleModel(new Particle_config(0.998f, 3.0f, 1.0f, true, -9.8f));
+	gen->setParticleModel(new Particle_config(0.998f, 3.0f, 1.0f, true, -9.8f));
+	_pS->addGenerator(gen);
 }
 
 
@@ -144,17 +152,17 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case 'B':
 	{
-		Projectile* projectile = new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 0.2f, Projectile::Type::Bullet);
-		projectiles.push_back(projectile);
+		/*Projectile* projectile = new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 0.2f, Projectile::Type::Bullet);
+		projectiles.push_back(projectile);*/
 		break;
 	}
 	case 'C': {
-		Projectile* projectile = new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 0.2f, Projectile::Type::Canonball);
-		projectiles.push_back(projectile);
+		/*Projectile* projectile = new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 0.2f, Projectile::Type::Canonball);
+		projectiles.push_back(projectile);*/
 		break;
 	}
 	case 'P': {
-		particles.push_back(new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 10, { 0,0,0 }, true, 1.0f, 0.98f, 3.0f));
+		//particles.push_back(new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 10, { 0,0,0 }, true, 1.0f, 0.98f, 3.0f));
 		break;
 	}
 	default:
