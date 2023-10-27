@@ -72,6 +72,26 @@ public:
 	std::list<Particle*> generateParticles(double t);
 
 private:
-	const float timeTillNextParticle = 0.33f;
+	const float timeTillNextParticle = 0.5f;
 	float currentTime = 0;
+};
+
+
+class UniformGenerator : public ParticleGenerator {
+public:
+	UniformGenerator(std::string name, Vector3 avgPos, Vector3 posDesv, Vector3 avgVel, Vector3 velDesv);
+
+	std::list<Particle*> generateParticles(double t);
+private:
+	// Posición
+	std::uniform_real_distribution<float>* posX;
+	std::uniform_real_distribution<float>* posY;
+	std::uniform_real_distribution<float>* posZ;
+
+	// Velocidad
+	std::uniform_real_distribution<float>* velX;
+	std::uniform_real_distribution<float>* velY;
+	std::uniform_real_distribution<float>* velZ;
+
+	std::default_random_engine gen;
 };

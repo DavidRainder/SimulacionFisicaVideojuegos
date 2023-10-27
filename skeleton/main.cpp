@@ -38,9 +38,6 @@ std::vector<Particle*> particles;
 GaussianParticleGenerator* gen;
 ParticleSystem* _pS;
 
-
-
-
 // Initialize physics engine
 void initPhysics(bool interactive)
 {
@@ -67,13 +64,29 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	gen = new FireworkGenerator("Gaussian1", { 0,50,0 }, { 0,0,0 }, { 1,10,1 });
 	_pS = new ParticleSystem();
-	gen->setParticleModel(new Particle_config(0.998f, 3.0f, 1.0f, true, -9.8f));
-	gen->setParticleModel(new Particle_config(0.998f, 3.0f, 1.0f, true, -9.8f));
-	gen->setParticleModel(new Particle_config(0.998f, 3.0f, 1.0f, true, -9.8f));
-	gen->setParticleModel(new Particle_config(0.998f, 3.0f, 1.0f, true, -9.8f));
-	_pS->addGenerator(gen);
+
+	//gen = new FireworkGenerator("Firework1", { 0,50,0 }, { 0,0,0 }, { 1,10,1 });
+	//gen->setParticleModel(new Particle_config(0.998f, 0.5f, 0.5f, true, -9.8f));
+	//gen->setParticleModel(new Particle_config(0.798f, 1.0f, 1.0f, true, -9.8f));
+	//gen->setParticleModel(new Particle_config(0.698f, 2.0f, 2.0f, true, -9.8f));
+	//gen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	//_pS->addGenerator(gen);
+
+	UniformGenerator* uniGen = new UniformGenerator("Uniform1", Vector3(-200, 0, 0), Vector3(25, 0, 25), Vector3(0, 30, 0), Vector3(3, 6, 3));
+	uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	//uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	//uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	//uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	_pS->addGenerator(uniGen);
+
+	//GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, 80, 0), Vector3(-400, 0, 0), Vector3(20, 30, 20));
+	//gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	//gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	//gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	//gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	//_pS->addGenerator(gausGen);
+
 }
 
 

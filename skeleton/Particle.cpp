@@ -21,7 +21,11 @@ Particle::Particle(const Particle_config& _pC) : Particle(_pC.pos, _pC.vel, _pC.
 
 void Particle::integrate(double t) {
 	pose.p += vel * t;
-	usesGravity ? vel += acc * t + Vector3(0, g * t, 0) : vel += acc * t;
+	// usesGravity ? vel += acc * t + Vector3(0, g * t, 0) : vel += acc * t;
+
+	if (usesGravity) vel += acc * t + Vector3(0, g * t, 0);
+	else vel += acc * t;
+
 	vel *= pow(damping,t);
 	timer += t;
 	if (timer > maxTimeAlive) {
@@ -35,7 +39,7 @@ Firework::Firework(int generation, Vector3 Pos, Vector3 vel, Vector3 acc, bool u
 	if (generation != 0) {
 		generatesParticles = true;
 		this->_pC = new Particle_config(Pos, vel, acc, damping, maxTimeAlive * 0.7f, scale, usesGravity, gravity);
-		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(Pos.x + acc.x), { 50,50,50 }, Pos, 20);
+		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(Pos.x + acc.x), { 50,50,50 }, Pos, 10);
 		generator->setParticleModel(this->_pC);
 	}
 };
@@ -46,8 +50,9 @@ Firework::Firework(int generation, Vector3 Pos, Vector3 vel, Vector3 acc, Vector
 	if (generation != 0) {
 		generatesParticles = true;
 		this->_pC = new Particle_config(Pos, vel, acc, damping, maxTimeAlive * 0.7f, scale, usesGravity, gravity, color);
-		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(Pos.x + acc.x), { 50,50,50 }, Pos, 20);
-		generator->setParticleModel(this->_pC);
+		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(Pos.x + acc.x), { 50,50,50 }, Pos, 10);
+		Particle_config newPC = Particle_config((*this->_pC));
+		generator->setParticleModel(_pC);
 	}
 };
 
@@ -56,7 +61,7 @@ Firework::Firework(int generation, Particle_config& _pC) :
 	if (generation != 0) {
 		generatesParticles = true;
 		this->_pC = new Particle_config(_pC);
-		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(_pC.pos.x + acc.x), { 50,50,50 }, _pC.pos, 20);
+		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(_pC.pos.x + acc.x), { 50,50,50 }, _pC.pos, 10);
 		generator->setParticleModel(this->_pC);
 	}
 };
@@ -68,6 +73,5 @@ void Firework::Destroy() {
 
 void Firework::integrate(double t) {
 	Particle::integrate(t);
-	// hacer fade
-	// rI->color.w -= 0.01f * t;
+	rI->color.w = 0;
 }

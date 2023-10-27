@@ -285,10 +285,11 @@ void setupDefaultRenderState()
 void startRender(const PxVec3& cameraEye, const PxVec3& cameraDir, PxReal clipNear, PxReal clipFar)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	glEnable(GL_BLEND);
+	
 	// Display text
 	glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
-	drawText(display_text, 0, 0);
+	// drawText(display_text, 0, 0);
 
 	// Setup camera
 	glMatrixMode(GL_PROJECTION);
@@ -316,9 +317,9 @@ void renderShape(const PxShape& shape, const PxTransform& transform, const PxVec
 	PxMat44 mtx(transform);
 	glMultMatrixf(reinterpret_cast<const float*>(&mtx));
 	assert(glGetError() == GL_NO_ERROR);
-	glColor4f(color.x, color.y, color.z, 1.0f);
+	glColor4f(color.x, color.y, color.z, color.w);
 	assert(glGetError() == GL_NO_ERROR);
-	renderGeometry(h, color.w < 0.999f);
+	renderGeometry(h, false);
 	assert(glGetError() == GL_NO_ERROR);
 	glPopMatrix();
 	assert(glGetError() == GL_NO_ERROR);

@@ -31,6 +31,7 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="ParticleGenerator.h" />
     <ClInclude Include="BoundingBox.h" />
+    <ClInclude Include="FireworkModels.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
