@@ -27,6 +27,9 @@ void ParticleSystem::update(double t) {
 	}
 }
 
+void ParticleSystem::addGenerator(ParticleGenerator* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG; }
+
+
 ParticleSystem::~ParticleSystem() {
 	for (auto it = _particles.begin(); it != _particles.end();) {
 		delete (*it);

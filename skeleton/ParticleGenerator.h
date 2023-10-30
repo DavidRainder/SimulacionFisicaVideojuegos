@@ -4,6 +4,7 @@
 #include <list>
 #include <random>
 #include <chrono>
+#include "FireworkModels.h"
 
 class ParticleGenerator
 {
@@ -20,6 +21,7 @@ protected:
 public:
 	void changePos(Vector3 pos) { _avgPos = pos; }
 	inline bool getDestroy() { return destroy; }
+	inline std::string getName() { return name; }
 
 	ParticleGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos) : name(name), _avgSpeed(avgSpeed),
 		_avgPos(avgPos) {

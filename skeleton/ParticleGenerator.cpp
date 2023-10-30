@@ -18,7 +18,9 @@ GaussianParticleGenerator::GaussianParticleGenerator(std::string name, Vector3 a
 }
 
 FireworkExplosionGenerator::FireworkExplosionGenerator(int generation, std::string name, Vector3 avgSpeed, Vector3 avgPos, int numParticles)
-	: ParticleGenerator(name, avgSpeed, avgPos), numParticles(numParticles), generation(generation) {}
+	: ParticleGenerator(name, avgSpeed, avgPos), numParticles(numParticles), generation(generation) {
+	models = Models::Fireworks;
+}
 
 std::list<Particle*> FireworkExplosionGenerator::generateParticles(double t) {
 	std::list<Particle*> _list;
@@ -35,7 +37,9 @@ std::list<Particle*> FireworkExplosionGenerator::generateParticles(double t) {
 }
 
 FireworkGenerator::FireworkGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos, Vector3 variation) :
-	GaussianParticleGenerator(name, avgSpeed, avgPos, variation) {}
+	GaussianParticleGenerator(name, avgSpeed, avgPos, variation) {
+	models = Models::Fireworks;
+}
 
 std::list<Particle*> FireworkGenerator::generateParticles(double t) {
 	std::list<Particle*> _list;
