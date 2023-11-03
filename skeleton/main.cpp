@@ -66,22 +66,16 @@ void initPhysics(bool interactive)
 
 	_pS = new ParticleSystem();
 
-	gen = new FireworkGenerator("Firework1", { 0,50,0 }, { 0,0,0 }, { 1,10,1 });
-	_pS->addGenerator(gen);
+	//gen = new FireworkGenerator("Firework1", { 0,50,0 }, { 0,0,0 }, { 1,10,1 });
+	//_pS->addGenerator(gen);
+	
+	//UniformGenerator* uniGen = new UniformGenerator("Uniform1", Vector3(-200, 0, 0), Vector3(25, 0, 25), Vector3(0, 30, 0), Vector3(3, 6, 3));
+	//uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	//_pS->addGenerator(uniGen);
 
-	UniformGenerator* uniGen = new UniformGenerator("Uniform1", Vector3(-200, 0, 0), Vector3(25, 0, 25), Vector3(0, 30, 0), Vector3(3, 6, 3));
-	uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	//uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	//uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	//uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	_pS->addGenerator(uniGen);
-
-	//GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, 80, 0), Vector3(-400, 0, 0), Vector3(20, 30, 20));
-	//gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	//gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	//gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	//gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	//_pS->addGenerator(gausGen);
+	GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, 80, 0), Vector3(0, 0, 0), Vector3(20, 30, 20));
+	gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
+	_pS->addGenerator(gausGen);
 
 }
 

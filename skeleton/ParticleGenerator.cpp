@@ -24,8 +24,8 @@ FireworkExplosionGenerator::FireworkExplosionGenerator(int generation, std::stri
 
 std::list<Particle*> FireworkExplosionGenerator::generateParticles(double t) {
 	std::list<Particle*> _list;
+	auto model = models[rand() % models.size()];
 	for (int i = 0; i < numParticles; ++i) {
-		auto model = models[rand() % models.size()];
 		model->pos = _avgPos;
 		model->vel = (Vector3((float)(rand() % 100 - 50),
 			(float)(rand() % 100 - 50), (float)(rand() % 100 - 50))).getNormalized() * 30;
