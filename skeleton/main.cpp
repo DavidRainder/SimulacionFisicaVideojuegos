@@ -10,6 +10,12 @@
 
 #include "Projectile.h"
 #include "ParticleSystem.h"
+#include "Plane.h"
+
+#include "ForceGenerator.h"
+#include "GravityForceGenerator.h"
+
+#include "ParticleForceRegistry.h"
 
 #include <iostream>
 
@@ -37,6 +43,7 @@ std::vector<Projectile*> projectiles;
 std::vector<Particle*> particles;
 GaussianParticleGenerator* gen;
 ParticleSystem* _pS;
+ParticleForceRegistry* _pFR;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -64,19 +71,26 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	_pS = new ParticleSystem();
+	_pFR = new ParticleForceRegistry();
+	_pS = new ParticleSystem(_pFR);
+
+	Vector3 gravity = Vector3(0.0f,-9.8f,0.0f);
+
+
+	GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, 30, 0), Vector3(0, 0, 0), Vector3(5, 10, 5));
+	gausGen->setParticleModel(new Particle_config(0.898f, 4.5f, 1.0f, true, 1.0f));
+	_pS->addGenerator(gausGen);
+
+	// UniformGenerator* uniGen = new UniformGenerator("Uniform1", Vector3(0, 0, 0), Vector3(25, 0, 25), Vector3(0, 25, 0), Vector3(3, 6, 3));
+	// uniGen->setParticleModel(new Particle_config(0.898f, 3.5f, 1.0f, true, 1.0f));
+	//_pS->addGenerator(uniGen);
+	_pS->addForceGenerator(new GravityForceGenerator(gravity));
+
+	Plane* plane = new Plane(Vector3(0, -50, 0), Vector3(250, 10, 250));
 
 	//gen = new FireworkGenerator("Firework1", { 0,50,0 }, { 0,0,0 }, { 1,10,1 });
 	//_pS->addGenerator(gen);
 	
-	//UniformGenerator* uniGen = new UniformGenerator("Uniform1", Vector3(-200, 0, 0), Vector3(25, 0, 25), Vector3(0, 30, 0), Vector3(3, 6, 3));
-	//uniGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	//_pS->addGenerator(uniGen);
-
-	GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, 80, 0), Vector3(0, 0, 0), Vector3(20, 30, 20));
-	gausGen->setParticleModel(new Particle_config(0.898f, 1.5f, 1.0f, true, -9.8f));
-	_pS->addGenerator(gausGen);
-
 }
 
 

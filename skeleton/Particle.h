@@ -4,24 +4,22 @@
 class ParticleGenerator;
 
 struct Particle_config {
-	Vector3 pos, vel, acc;
-	float damping, maxTimeAlive, g, scale;
+	Vector3 pos, vel;
+	float damping, maxTimeAlive, scale, mass;
 	bool usesGravity;
 	Vector4 color;
-	Particle_config(float damping, float maxTimeAlive, float scale, bool usesGravity, float g, 
-		Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }) : Particle_config(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0), damping, maxTimeAlive, scale, usesGravity, g, color)  {};
-	Particle_config(Vector3 pos, Vector3 vel, Vector3 acc, float damping, float maxTimeAlive, float scale, bool usesGravity, float g,
-		Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }) : pos(pos), vel(vel),
-		acc(vel), damping(damping), maxTimeAlive(maxTimeAlive), g(g), color(color), usesGravity(usesGravity), scale(scale) {}
+	Particle_config(float damping, float maxTimeAlive, float scale, bool usesGravity, float mass, 
+		Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }) : Particle_config(Vector3(0, 0, 0), Vector3(0, 0, 0), damping, maxTimeAlive, scale, usesGravity, mass, color)  {};
+	Particle_config(Vector3 pos, Vector3 vel, float damping, float maxTimeAlive, float scale, bool usesGravity, float mass,
+		Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }) : pos(pos), vel(vel), damping(damping), maxTimeAlive(maxTimeAlive), color(color), usesGravity(usesGravity), mass(mass), scale(scale) {}
 
 	Particle_config(Particle_config& p) {
 		// construir por copia;
+		this->mass = p.mass;
 		this->pos = p.pos;
 		this->vel = p.vel;
-		this->acc = p.acc;
 		this->damping = p.damping;
 		this->maxTimeAlive = p.maxTimeAlive;
-		this->g = p.g;
 		this->usesGravity = p.usesGravity;
 		this->color = p.color;
 		this->scale = p.scale;
@@ -31,8 +29,8 @@ struct Particle_config {
 class Particle
 {
 public:
-	Particle(Vector3 Pos, Vector3 vel, Vector3 acc, bool usesGravity = false, float gravity = -9.8f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
-	Particle(Vector3 Pos, Vector3 vel, Vector3 acc, Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }, bool usesGravity = false, float gravity = -9.8f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
+	Particle(Vector3 Pos, Vector3 vel, bool usesGravity = false, float mass = 1.0f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
+	Particle(Vector3 Pos, Vector3 vel, Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }, bool usesGravity = false, float mass = 1.0f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
 	Particle(const Particle_config& _pC);
 	virtual ~Particle() {
 		if (rI != nullptr) rI->release();
@@ -42,15 +40,21 @@ public:
 	virtual void integrate(double t);
 	inline bool getDestroy() { return destroy; }
 
+	inline float getInvMass() { return 1.0f / mass; }
+	inline float getMass() { return mass; }
+
 	inline bool generatesOnDeath() { return generatesParticles; }
 	inline ParticleGenerator* getPG() { return generator; }
+	inline void addForce(const Vector3& f) { force += f; }
 protected:
+	inline void clearAccum() { force *= 0.0f; }; // clear accumulated force
+	Vector3 force = {0,0,0}; // accumulated force
+	float mass;
 	ParticleGenerator* generator = nullptr;
 	bool generatesParticles = false;
-	float g = -9.8f;
 	bool usesGravity;
 	bool destroy = false;
-	Vector3 vel, acc;
+	Vector3 vel;
 	float damping;
 	physx::PxTransform pose;
 	RenderItem* rI; // render item
@@ -63,8 +67,8 @@ protected:
 
 class Firework : public Particle {
 public:
-	Firework(int generation, Vector3 Pos, Vector3 vel, Vector3 acc, bool usesGravity = false, float gravity = -9.8f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
-	Firework(int generation, Vector3 Pos, Vector3 vel, Vector3 acc, Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }, bool usesGravity = false, float gravity = -9.8f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
+	Firework(int generation, Vector3 Pos, Vector3 vel, bool usesGravity = false, float mass = 1.0f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
+	Firework(int generation, Vector3 Pos, Vector3 vel, Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }, bool usesGravity = false, float mass = 1.0f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
 	Firework(int generation, Particle_config& _pC);
 
 	void integrate(double t);

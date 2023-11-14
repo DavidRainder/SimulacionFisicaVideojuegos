@@ -7,6 +7,7 @@ void ParticleSystem::update(double t) {
 		else {
 			if ((*it)->generatesOnDeath())
 				addGenerator((*it)->getPG());
+			_pFR->deleteParticleRegistry((*it));
 			delete (*it);
 			*it = nullptr;
 			it = _particles.erase(it);
@@ -21,10 +22,13 @@ void ParticleSystem::update(double t) {
 		}
 		else {
 			auto newList = (*it)->generateParticles(t);
+			addParticlesToRegistry(newList);
 			_particles.splice(_particles.end(), newList);
 			++it;
 		}
 	}
+
+	_pFR->updateForces(t);
 }
 
 void ParticleSystem::addGenerator(ParticleGenerator* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG; }
@@ -32,6 +36,7 @@ void ParticleSystem::addGenerator(ParticleGenerator* _pG) { _particleGenerators.
 
 ParticleSystem::~ParticleSystem() {
 	for (auto it = _particles.begin(); it != _particles.end();) {
+		_pFR->deleteParticleRegistry((*it));
 		delete (*it);
 		*it = nullptr;
 		it = _particles.erase(it);

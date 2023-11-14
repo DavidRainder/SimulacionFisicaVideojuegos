@@ -2,7 +2,7 @@
 #include <iostream>
 
 Projectile::Projectile(Vector3 pos, Vector3 dir, float scale, Type pType, float scaleSpeed, float maxTimeAlive) : 
-	Particle(pos, Vector3(0, 0, 0), Vector3(0, 0, 0), 0.0f, scale, 0.98f, maxTimeAlive) {
+	Particle(pos, Vector3(0, 0, 0), 0.0f, scale, 0.98f, maxTimeAlive) {
 	switch (pType) {
 	case Type::Canonball: { // cannonball (heavy)
 		// real ----
@@ -27,8 +27,6 @@ Projectile::Projectile(Vector3 pos, Vector3 dir, float scale, Type pType, float 
 		break;
 	}
 	}
-	calculateMass(); // simulated mass
-	calculateGravity(); // simulated gravity
 }
 
 void Projectile::integrate(double t) {

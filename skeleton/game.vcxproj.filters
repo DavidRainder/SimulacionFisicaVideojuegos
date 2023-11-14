@@ -16,6 +16,8 @@
     <ClCompile Include="ParticleGenerator.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="FireworkModels.cpp" />
+    <ClCompile Include="GravityForceGenerator.cpp" />
+    <ClCompile Include="Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -33,6 +35,10 @@
     <ClInclude Include="ParticleGenerator.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="FireworkModels.h" />
+    <ClInclude Include="ForceGenerator.h" />
+    <ClInclude Include="ParticleForceRegistry.h" />
+    <ClInclude Include="GravityForceGenerator.h" />
+    <ClInclude Include="Plane.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
