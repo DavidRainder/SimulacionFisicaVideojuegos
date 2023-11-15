@@ -16,11 +16,13 @@
 #include "GravityForceGenerator.h"
 
 #include "ParticleForceRegistry.h"
+#include "ParticleDragGenerator.h"
+#include "Whirlwind.h"
+#include "ExplosionForceGenerator.h"
 
 #include <iostream>
 
 std::string display_text = "This is a test";
-
 
 using namespace physx;
 
@@ -71,26 +73,38 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	_pFR = new ParticleForceRegistry();
-	_pS = new ParticleSystem(_pFR);
+	_pS = new ParticleSystem();
 
 	Vector3 gravity = Vector3(0.0f,-9.8f,0.0f);
 
-
-	GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, 30, 0), Vector3(0, 0, 0), Vector3(5, 10, 5));
-	gausGen->setParticleModel(new Particle_config(0.898f, 4.5f, 1.0f, true, 1.0f));
+	GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, 20.0f, 0), Vector3(-50, 0, 0), Vector3(1, 1, 1));
+	gausGen->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
 	_pS->addGenerator(gausGen);
+
+	GaussianParticleGenerator* gausGen2 = new GaussianParticleGenerator("Gaussian2", Vector3(0, 20.0f, 0), Vector3(50, 0, 0), Vector3(1, 1, 1));
+	gausGen2->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
+	_pS->addGenerator(gausGen2);
+
+	GaussianParticleGenerator* gausGen3 = new GaussianParticleGenerator("Gaussian3", Vector3(0, 20.0f, 0), Vector3(0, 0, -50), Vector3(1, 1, 1));
+	gausGen3->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
+	_pS->addGenerator(gausGen3);
+
+	GaussianParticleGenerator* gausGen4 = new GaussianParticleGenerator("Gaussian4", Vector3(0, 20.0f, 0), Vector3(0, 0, 50), Vector3(1, 1, 1));
+	gausGen4->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
+	_pS->addGenerator(gausGen4);
 
 	// UniformGenerator* uniGen = new UniformGenerator("Uniform1", Vector3(0, 0, 0), Vector3(25, 0, 25), Vector3(0, 25, 0), Vector3(3, 6, 3));
 	// uniGen->setParticleModel(new Particle_config(0.898f, 3.5f, 1.0f, true, 1.0f));
 	//_pS->addGenerator(uniGen);
-	_pS->addForceGenerator(new GravityForceGenerator(gravity));
+	// _pS->addForceGenerator(new GravityForceGenerator(gravity));
+	// _pS->addForceGenerator(new ParticleDragGenerator(Vector3(2.0f,0,0), 1.0f, 0.0f));
+	// _pS->addForceGenerator(new WhirlwindForceGenerator(Vector3(0,0,0), 0.5f));
+	_pS->addForceGenerator(new ExplosionForceGenerator(Vector3(0,0,0),2.0f, 150));
 
-	Plane* plane = new Plane(Vector3(0, -50, 0), Vector3(250, 10, 250));
+	// Plane* plane = new Plane(Vector3(0, -50, 0), Vector3(250, 10, 250));
 
 	//gen = new FireworkGenerator("Firework1", { 0,50,0 }, { 0,0,0 }, { 1,10,1 });
 	//_pS->addGenerator(gen);
-	
 }
 
 
@@ -156,7 +170,7 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 	
 	gFoundation->release();
-	}
+}
 
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera)

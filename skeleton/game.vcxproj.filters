@@ -18,6 +18,9 @@
     <ClCompile Include="FireworkModels.cpp" />
     <ClCompile Include="GravityForceGenerator.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="ParticleDragGenerator.cpp" />
+    <ClCompile Include="Whirlwind.cpp" />
+    <ClCompile Include="ExplosionForceGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -39,6 +42,9 @@
     <ClInclude Include="ParticleForceRegistry.h" />
     <ClInclude Include="GravityForceGenerator.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="ParticleDragGenerator.h" />
+    <ClInclude Include="Whirlwind.h" />
+    <ClInclude Include="ExplosionForceGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

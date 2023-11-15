@@ -20,7 +20,7 @@ private:
 	list<ForceGenerator*> _forceGenerators;
 	ParticleForceRegistry* _pFR;
 public:
-	ParticleSystem(ParticleForceRegistry* _pFR) : _pFR(_pFR) {};
+	ParticleSystem() : _pFR(new ParticleForceRegistry()) {};
 	~ParticleSystem();
 	void update(double t);
 	void addGenerator(ParticleGenerator* _pG);

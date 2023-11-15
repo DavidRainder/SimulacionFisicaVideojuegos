@@ -40,9 +40,11 @@ public:
 	virtual void integrate(double t);
 	inline bool getDestroy() { return destroy; }
 
+	inline Vector3 getPos() { return pose.p; }
+	inline Vector3 getVel() { return vel; }
 	inline float getInvMass() { return 1.0f / mass; }
 	inline float getMass() { return mass; }
-
+	
 	inline bool generatesOnDeath() { return generatesParticles; }
 	inline ParticleGenerator* getPG() { return generator; }
 	inline void addForce(const Vector3& f) { force += f; }
