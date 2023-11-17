@@ -16,6 +16,5 @@ void ExplosionForceGenerator::updateForce(Particle* p, double t) {
 			force = (explosionForce / (distDiff * distDiff)) * (pPos - pos) * exp(-time / timeConst);
 			if (distDiff < r) p->addForce(force);
 		}
-		else Destroy();
 	}
 }

@@ -6,7 +6,13 @@
 class ParticleDragGenerator : public ForceGenerator {
 public:
 	ParticleDragGenerator(Vector3 windForce, const float k1, const float k2 = 0, 
-		BoundingBox bb = BoundingBox(Point(0, 0, 0), Point(0, 0, 0))) : ForceGenerator(bb) {
+		BoundingBox bb = BoundingBox(Point(0, 0, 0), Point(0, 0, 0)), float duration = 1e18) 
+		: ForceGenerator(bb, duration) {
+		setDrag(k1, k2);
+		this->windForce = windForce;
+	};
+	ParticleDragGenerator(Vector3 windForce, const float k1, const float k2 = 0,
+		float duration = 1e18) : ForceGenerator(duration) {
 		setDrag(k1, k2);
 		this->windForce = windForce;
 	};

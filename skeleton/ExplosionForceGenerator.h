@@ -2,9 +2,12 @@
 
 class ExplosionForceGenerator : public ForceGenerator {
 public:
-	ExplosionForceGenerator(Vector3 pos, float explosionForce, float r, BoundingBox bb = BoundingBox(Point(0,0,0), Point(0,0,0))) : 
+	ExplosionForceGenerator(Vector3 pos, float explosionForce, float r, 
+		BoundingBox bb, float duration = 1e18) : 
 		ForceGenerator(bb), pos(pos), explosionForce(explosionForce), r(r), velocity(r) {}
 
+	ExplosionForceGenerator(Vector3 pos, float explosionForce, float r, float duration = 1e18) :
+		ForceGenerator(duration), pos(pos), explosionForce(explosionForce), r(r), velocity(r) {}
 	virtual void updateForce(Particle* p, double t);
 
 private:

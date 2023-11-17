@@ -27,7 +27,9 @@ void ParticleSystem::update(double t) {
 			++it;
 		}
 	}
-
+	for (auto it : _forceGenerators) {
+		it->updateTime(t);
+	}
 	if (_pFR->updateForces(t)) {
 		for (auto it = _forceGenerators.begin(); it != _forceGenerators.end();)
 		{

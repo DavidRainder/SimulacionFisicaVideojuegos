@@ -8,7 +8,7 @@ void WhirlwindForceGenerator::updateForce(Particle* p, double t) {
 		// Si la usa y está dentro de los límites, 
 		// también entra, pero usándola fuera de los límites no funciona
 		Vector3 force = k * Vector3(-(pPos.z - centerPos.z),
-			(pPos.y - centerPos.y), pPos.x - centerPos.x);
+			75 - (pPos.y - centerPos.y), pPos.x - centerPos.x);
 
 		force = (force - p->getVel());
 
