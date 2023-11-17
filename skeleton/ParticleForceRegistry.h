@@ -1,14 +1,16 @@
 #pragma once
-
 #include <map>
 #include "ForceGenerator.h"
 
 class ParticleForceRegistry : public std::multimap<Particle*, ForceGenerator*> {
 public:
-	void updateForces(double t) {
-		for (auto it = begin(); it != end(); ++it) {
-			it->second->updateForce(it->first, t);
+	bool updateForces(double t) {
+		bool destroyGen = false;
+		for (auto it = begin(); it != end(); ) {
+			if (!it->second->getDestroy()) { it->second->updateForce(it->first, t); ++it; }
+			else { destroyGen = true; it = erase(it); }
 		}
+		return destroyGen;
 	}
 
 	void addRegistry(ForceGenerator* fG, Particle* p) {

@@ -4,15 +4,18 @@
 #include <cmath>
 
 void ExplosionForceGenerator::updateForce(Particle* p, double t) {
-	Vector3 force;
-	Vector3 pos = p->getPos();
-	float distDiff = (pos - this->pos).magnitude();
-	if (distDiff < r) {
-		(explosionForce / pow(r, 2))* Vector3(pos.x - this->pos.x,
-			pos.y - this->pos.y,
-			pos.z - this->pos.z)* pow(M_E, (-t/3));
-	}
-	else force = Vector3(0, 0, 0);
+	Vector3 pPos = p->getPos();
+	if ((!usesBB) || (_bb.insideBoundingBox(pPos))) {
+		time += t;
+		Vector3 force = Vector3(0,0,0);
+		float distDiff = (pPos - pos).magnitude();
+		const float timeConst = 20.0f;
+		if (time < 4 * timeConst) {
+			r = velocity.magnitude() * time;
 
-	p->addForce(force);
+			force = (explosionForce / (distDiff * distDiff)) * (pPos - pos) * exp(-time / timeConst);
+			if (distDiff < r) p->addForce(force);
+		}
+		else Destroy();
+	}
 }

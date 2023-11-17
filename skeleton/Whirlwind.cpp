@@ -1,11 +1,17 @@
-#include "Whirlwind.h"
+#include "Whirlwind.h" 
 
 void WhirlwindForceGenerator::updateForce(Particle* p, double t) {
 	if (fabs(p->getInvMass()) < -1e10) return;
-
 	Vector3 pPos = p->getPos();
-	Vector3 force = windForce * Vector3(-(p->getPos().z - centerPos.z),
-		(p->getPos().y - centerPos.y), p->getPos().x - centerPos.x);
+	if ((!usesBB) || (_bb.insideBoundingBox(pPos))) { 
+		// si no usa BB, entra. 
+		// Si la usa y está dentro de los límites, 
+		// también entra, pero usándola fuera de los límites no funciona
+		Vector3 force = k * Vector3(-(pPos.z - centerPos.z),
+			(pPos.y - centerPos.y), pPos.x - centerPos.x);
 
-	p->addForce(force);
+		force = (force - p->getVel());
+
+		p->addForce(force);
+	}
 }

@@ -22,7 +22,6 @@ Particle::Particle(const Particle_config& _pC) : Particle(_pC.pos, _pC.vel, _pC.
 void Particle::integrate(double t) {
 	// Get the accel considering the force accum
 	Vector3 resulting_accel = force * getInvMass();
-	std::cout << getInvMass() << '\n';
 	vel += resulting_accel * t; // Ex. 1.3 --> add acceleration
 	vel *= powf(damping, t); // Exercise 1.3 --> add damping
 	pose.p += vel * t; // i don't think its necessary to multiply again by delta_t. 

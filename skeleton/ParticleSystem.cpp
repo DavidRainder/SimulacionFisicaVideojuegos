@@ -28,7 +28,17 @@ void ParticleSystem::update(double t) {
 		}
 	}
 
-	_pFR->updateForces(t);
+	if (_pFR->updateForces(t)) {
+		for (auto it = _forceGenerators.begin(); it != _forceGenerators.end();)
+		{
+			if ((*it)->getDestroy()) {
+				delete (*it);
+				(*it) = nullptr;
+				it = _forceGenerators.erase(it);
+			}
+			else ++it;
+		}
+	}
 }
 
 void ParticleSystem::addGenerator(ParticleGenerator* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG; }

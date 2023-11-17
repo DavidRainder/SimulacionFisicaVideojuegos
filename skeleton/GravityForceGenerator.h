@@ -5,7 +5,8 @@
 
 class GravityForceGenerator : public ForceGenerator {
 public:
-	GravityForceGenerator(const Vector3& f) : ForceGenerator() { _gravity = f; };
+	GravityForceGenerator(const Vector3& f, BoundingBox bb = BoundingBox(Point(0, 0, 0), Point(0, 0, 0))) : 
+		ForceGenerator(bb) { _gravity = f; };
 
 	virtual void updateForce(Particle* p, double t);
 

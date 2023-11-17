@@ -77,19 +77,21 @@ void initPhysics(bool interactive)
 
 	Vector3 gravity = Vector3(0.0f,-9.8f,0.0f);
 
-	GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, 20.0f, 0), Vector3(-50, 0, 0), Vector3(1, 1, 1));
-	gausGen->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
+	const int offset = 25;
+
+	GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, 20.0f, 0), Vector3(-offset, 0, 0), Vector3(1, 1, 1));
+	gausGen->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 0.1f));
 	_pS->addGenerator(gausGen);
 
-	GaussianParticleGenerator* gausGen2 = new GaussianParticleGenerator("Gaussian2", Vector3(0, 20.0f, 0), Vector3(50, 0, 0), Vector3(1, 1, 1));
-	gausGen2->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
+	GaussianParticleGenerator* gausGen2 = new GaussianParticleGenerator("Gaussian2", Vector3(0, 20.0f, 0), Vector3(offset, 0, 0), Vector3(1, 1, 1));
+	gausGen2->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 0.0001f));
 	_pS->addGenerator(gausGen2);
 
-	GaussianParticleGenerator* gausGen3 = new GaussianParticleGenerator("Gaussian3", Vector3(0, 20.0f, 0), Vector3(0, 0, -50), Vector3(1, 1, 1));
-	gausGen3->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
+	GaussianParticleGenerator* gausGen3 = new GaussianParticleGenerator("Gaussian3", Vector3(0, 20.0f, 0), Vector3(0, 0, -offset), Vector3(1, 1, 1));
+	gausGen3->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 0.001f));
 	_pS->addGenerator(gausGen3);
 
-	GaussianParticleGenerator* gausGen4 = new GaussianParticleGenerator("Gaussian4", Vector3(0, 20.0f, 0), Vector3(0, 0, 50), Vector3(1, 1, 1));
+	GaussianParticleGenerator* gausGen4 = new GaussianParticleGenerator("Gaussian4", Vector3(0, 20.0f, 0), Vector3(0, 0, offset), Vector3(1, 1, 1));
 	gausGen4->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
 	_pS->addGenerator(gausGen4);
 
@@ -98,8 +100,7 @@ void initPhysics(bool interactive)
 	//_pS->addGenerator(uniGen);
 	// _pS->addForceGenerator(new GravityForceGenerator(gravity));
 	// _pS->addForceGenerator(new ParticleDragGenerator(Vector3(2.0f,0,0), 1.0f, 0.0f));
-	// _pS->addForceGenerator(new WhirlwindForceGenerator(Vector3(0,0,0), 0.5f));
-	_pS->addForceGenerator(new ExplosionForceGenerator(Vector3(0,0,0),2.0f, 150));
+	// _pS->addForceGenerator(new WhirlwindForceGenerator(Vector3(0,0,0), 5.0f));
 
 	// Plane* plane = new Plane(Vector3(0, -50, 0), Vector3(250, 10, 250));
 
@@ -182,9 +183,11 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case 'B': break;
 	//case ' ':	break;
 	case 'B':
-	{
+	{		
 		/*Projectile* projectile = new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 0.2f, Projectile::Type::Bullet);
 		projectiles.push_back(projectile);*/
+		BoundingBox bb = BoundingBox(Point(-30, -30, -30), Point(30, 30, 30));
+		_pS->addForceGenerator(new ExplosionForceGenerator(Vector3(0, 50, 0), 100.0f, 200, bb));
 		break;
 	}
 	case 'C': {
@@ -192,7 +195,8 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		projectiles.push_back(projectile);*/
 		break;
 	}
-	case 'P': {
+	case ' ': {
+		_pS->addForceGenerator(new ExplosionForceGenerator(Vector3(0, 50, 0), 100.0f, 200));
 		//particles.push_back(new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 10, { 0,0,0 }, true, 1.0f, 0.98f, 3.0f));
 		break;
 	}
@@ -206,7 +210,6 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 	PX_UNUSED(actor1);
 	PX_UNUSED(actor2);
 }
-
 
 int main(int, const char*const*)
 {

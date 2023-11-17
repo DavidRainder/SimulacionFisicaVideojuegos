@@ -14,6 +14,8 @@ public:
 	}
 	
 	Point center() { return dimensions() / 2; }
+	Point minPoint() { return minP; }
+	Point maxPoint() { return maxP; }
 	Point topCenter() { return center() + Vector3(0, dimensions().y / 2, 0); }
 	Point bottomCenter() { return center() - Vector3(0,dimensions().y / 2,0); }
 	float width() { return dimensions().x; }
