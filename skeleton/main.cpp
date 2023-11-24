@@ -202,6 +202,11 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		_pS->addForceGenerator(new ExplosionForceGenerator(Vector3(0, 50, 0), 100000.0f, 2000));
 		break;
 	}
+	case 'G': {
+		Vector3 gravity = Vector3(0.0f, -9.8f, 0.0f);
+		_pS->addForceGenerator(new GravityForceGenerator(gravity));
+		break;
+	}
 	default:
 		break;
 	}

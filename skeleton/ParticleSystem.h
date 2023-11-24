@@ -13,6 +13,7 @@ using namespace std;
 class ParticleSystem
 {
 private:
+	const int MAX_PARTICLES = 5000;
 	list<Particle*> _particles;
 	std::list<ParticleGenerator*> _particleGenerators;
 	std::unordered_map<string, ParticleGenerator*> _particleGeneratorByName;

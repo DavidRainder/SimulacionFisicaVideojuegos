@@ -2,45 +2,45 @@
 
 void ParticleSystem::update(double t) {
 
-	for (auto it = _particles.begin(); it != _particles.end();) {
-		if (!(*it)->getDestroy()) { (*it)->integrate(t); ++it; }
-		else {
-			if ((*it)->generatesOnDeath())
-				addGenerator((*it)->getPG());
-			_pFR->deleteParticleRegistry((*it));
-			delete (*it);
-			*it = nullptr;
-			it = _particles.erase(it);
+		for (auto it = _particles.begin(); it != _particles.end();) {
+			if (!(*it)->getDestroy()) { (*it)->integrate(t); ++it; }
+			else {
+				if ((*it)->generatesOnDeath())
+					addGenerator((*it)->getPG());
+				_pFR->deleteParticleRegistry((*it));
+				delete (*it);
+				*it = nullptr;
+				it = _particles.erase(it);
+			}
 		}
-	}
-
-	for (auto it = _particleGenerators.begin(); it != _particleGenerators.end();) {
-		if ((*it)->getDestroy()) {
-			delete (*it);
-			*it = nullptr;
-			it = _particleGenerators.erase(it);
-		}
-		else {
-			auto newList = (*it)->generateParticles(t);
-			addParticlesToRegistry(newList);
-			_particles.splice(_particles.end(), newList);
-			++it;
-		}
-	}
-	for (auto it : _forceGenerators) {
-		it->updateTime(t);
-	}
-	if (_pFR->updateForces(t)) {
-		for (auto it = _forceGenerators.begin(); it != _forceGenerators.end();)
-		{
+		for (auto it = _particleGenerators.begin(); it != _particleGenerators.end();) {
 			if ((*it)->getDestroy()) {
 				delete (*it);
-				(*it) = nullptr;
-				it = _forceGenerators.erase(it);
+				*it = nullptr;
+				it = _particleGenerators.erase(it);
+			}
+			else if (_particles.size() < MAX_PARTICLES) {
+				auto newList = (*it)->generateParticles(t);
+				addParticlesToRegistry(newList);
+				_particles.splice(_particles.end(), newList);
+				++it;
 			}
 			else ++it;
 		}
-	}
+		for (auto it : _forceGenerators) {
+			it->updateTime(t);
+		}
+		if (_pFR->updateForces(t)) {
+			for (auto it = _forceGenerators.begin(); it != _forceGenerators.end();)
+			{
+				if ((*it)->getDestroy()) {
+					delete (*it);
+					(*it) = nullptr;
+					it = _forceGenerators.erase(it);
+				}
+				else ++it;
+			}
+		}
 }
 
 void ParticleSystem::addGenerator(ParticleGenerator* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG; }
