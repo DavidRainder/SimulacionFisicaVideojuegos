@@ -28,7 +28,7 @@ void Particle::integrate(double t) {
 	timer += t;
 	// Clear accum
 	clearAccum();
-	if (timer > maxTimeAlive) {
+	if (maxTimeAlive > 0 && timer > maxTimeAlive) {
 		Destroy();
 	}
 }

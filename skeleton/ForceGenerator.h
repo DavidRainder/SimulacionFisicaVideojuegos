@@ -6,7 +6,7 @@ public:
 	ForceGenerator(BoundingBox bb = BoundingBox(Point(0,0,0), Point(0,0,0)), float duration = 1e18) : _bb(bb), _duration(duration) {
 		usesBB = bb.dimensions().magnitude() > 0;
 	};
-	ForceGenerator(float duration = 1e18) : _duration(duration), _bb(BoundingBox(Point(0, 0, 0), Point(0, 0, 0))) {
+	ForceGenerator(float duration) : _duration(duration), _bb(BoundingBox(Point(0, 0, 0), Point(0, 0, 0))) {
 		usesBB = false;
 	};
 	virtual void updateForce(Particle* particle, double duration) = 0;

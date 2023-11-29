@@ -253,6 +253,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnchoredSpringFG.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="ExplosionForceGenerator.cpp" />
@@ -268,9 +269,11 @@
     <ClCompile Include="RenderUtils.cpp" />
     <ClCompile Include="Render\Camera.cpp" />
     <ClCompile Include="Render\Render.cpp" />
+    <ClCompile Include="SpringForceGenerator.cpp" />
     <ClCompile Include="Whirlwind.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnchoredSpringFG.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
@@ -288,6 +291,7 @@
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
+    <ClInclude Include="SpringForceGenerator.h" />
     <ClInclude Include="Whirlwind.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

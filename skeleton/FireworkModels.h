@@ -15,5 +15,9 @@ namespace Models {
 	new Particle_config(0.998f, 2.8f, 1.0f, true, 1.0f),
 	new Particle_config(0.998f, 3.8f, 1.0f, true, 1.0f),
 	new Particle_config(0.998f, 4.3f, 1.0f, true, 1.0f),
-	};;
+	};
+
+	static std::vector<Particle_config*> Springs{
+	new Particle_config(0.998f, 240, 1.0f, false, 1.0f),
+	};
 }

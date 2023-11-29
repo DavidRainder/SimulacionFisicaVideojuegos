@@ -5,6 +5,7 @@
 #include <chrono>
 #include "ParticleGenerator.h"
 #include "ForceGenerator.h"
+#include "AnchoredSpringFG.h"
 #include "ParticleForceRegistry.h"
 #include <unordered_map>
 using namespace std;
@@ -40,5 +41,8 @@ public:
 		}
 	}
 	ParticleGenerator* getGenerator(string name) { return _particleGeneratorByName[name]; };
+
+
+	void generateSpring();
 };
 
