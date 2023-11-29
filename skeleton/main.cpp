@@ -82,15 +82,15 @@ void initPhysics(bool interactive)
 	float speed = 35.0f;
 
 	GaussianParticleGenerator* gausGen = new GaussianParticleGenerator("Gaussian1", Vector3(0, speed, 0), Vector3(-offset, 0, 0), Vector3(1, 1, 1));
-	gausGen->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
+	gausGen->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 10.0f));
 	_pS->addGenerator(gausGen);
 
 	GaussianParticleGenerator* gausGen2 = new GaussianParticleGenerator("Gaussian2", Vector3(0, speed, 0), Vector3(offset, 0, 0), Vector3(1, 1, 1));
-	gausGen2->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
+	gausGen2->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 0.1f));
 	_pS->addGenerator(gausGen2);
 
 	GaussianParticleGenerator* gausGen3 = new GaussianParticleGenerator("Gaussian3", Vector3(0, speed, 0), Vector3(0, 0, -offset), Vector3(1, 1, 1));
-	gausGen3->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 1.0f));
+	gausGen3->setParticleModel(new Particle_config(0.898f, 10.5f, 1.0f, true, 0.01f));
 	_pS->addGenerator(gausGen3);
 
 	GaussianParticleGenerator* gausGen4 = new GaussianParticleGenerator("Gaussian4", Vector3(0, speed, 0), Vector3(0, 0, offset), Vector3(1, 1, 1));
@@ -190,12 +190,16 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		_pS->addForceGenerator(new ExplosionForceGenerator(Vector3(0, 50, 0), 100.0f, 200, bb, 10.0f));
 		break;
 	}
-	case 'C': {
-		_pS->addForceGenerator(new WhirlwindForceGenerator(Vector3(0, 0, 0), 1.0f, BoundingBox(Point(-300,-300,-300), Point(300,300,300)), 10.0f));
+	case 'E': {
+		BoundingBox smallBB = BoundingBox(Point(-50, -50, -50), Point(50, 50, 50));
+		BoundingBox bigBB = BoundingBox(Point(-100, -100, -100), Point(100, 100, 100));
+		_pS->addForceGenerator(new WhirlwindForceGenerator(Vector3(0, 0, 0), 1.0f,
+			bigBB, 10.0f));
 		break;
 	}
-	case 'X': {
-		_pS->addForceGenerator(new ParticleDragGenerator(Vector3(0, 12, 12), 1, 0.0f, 10.0f));
+	case 'C': {
+		BoundingBox BB = BoundingBox(Point(-100, 30, -100), Point(100, 60, 100));
+		_pS->addForceGenerator(new ParticleDragGenerator(Vector3(0, 15, -15), .5f, 0, BB, 10.0f));
 		break;
 	}
 	case ' ': {
