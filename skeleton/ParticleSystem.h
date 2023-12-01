@@ -7,6 +7,7 @@
 #include "ForceGenerator.h"
 #include "AnchoredSpringFG.h"
 #include "ParticleForceRegistry.h"
+#include "BouyancyForceGenerator.h"
 #include <unordered_map>
 using namespace std;
 
@@ -21,6 +22,7 @@ private:
 
 	list<ForceGenerator*> _forceGenerators;
 	ParticleForceRegistry* _pFR;
+	list<SpringForceGenerator*> _springGenerators;
 public:
 	ParticleSystem() : _pFR(new ParticleForceRegistry()) {};
 	~ParticleSystem();
@@ -40,9 +42,14 @@ public:
 			}
 		}
 	}
+
 	ParticleGenerator* getGenerator(string name) { return _particleGeneratorByName[name]; };
 
-
 	void generateSpring();
-};
 
+	void changeConstantSpring(double k) {
+		for (auto it : _springGenerators) {
+			it->setK(k);
+		}
+	}
+};

@@ -44,7 +44,6 @@ void ParticleSystem::update(double t) {
 
 void ParticleSystem::addGenerator(ParticleGenerator* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG; }
 
-
 ParticleSystem::~ParticleSystem() {
 	for (auto it = _particles.begin(); it != _particles.end();) {
 		_pFR->deleteParticleRegistry((*it));
@@ -63,9 +62,10 @@ void ParticleSystem::generateSpring() {
 	// 2 particles
 	Particle_config model = *Models::Springs[0];
 	model.vel = { 0,0,0 };
-	model.pos = Vector3(0, 0, 0);
+	model.pos = Vector3(25, 50, 0);
 	Particle* p1 = new Particle(model);
-	model.pos = Vector3(0, -100, 0);
+	model = *Models::Springs[1];
+	model.pos = Vector3(25, 70, 0);
 	Particle* p2 = new Particle(model);
 	SpringForceGenerator* _spring1 = new SpringForceGenerator(1, 10, p2);
 	_pFR->addRegistry(_spring1, p1);
@@ -73,14 +73,38 @@ void ParticleSystem::generateSpring() {
 	_pFR->addRegistry(_spring2, p2);
 	_forceGenerators.push_back(_spring1);
 	_forceGenerators.push_back(_spring2);
+	_springGenerators.push_back(_spring1);
+	_springGenerators.push_back(_spring2);
 	_particles.push_back(p1); 
 	_particles.push_back(p2);
 
 	// fixed
-	model.pos = { 100, 15, 0 };
+	model = *Models::Springs[2];
+	model.pos = { 50, 20, 0 };
 	Particle* p3 = new Particle(model);
-	AnchoredSpringFG* _aSpring = new AnchoredSpringFG(1, 10, { 100,25,0 });
+	AnchoredSpringFG* _aSpring = new AnchoredSpringFG(1, 10, { 50,25,0 });
 	_pFR->addRegistry(_aSpring, p3);
-	_forceGenerators.push_back(_aSpring);
 	_particles.push_back(p3);
+	_forceGenerators.push_back(_aSpring);
+	_springGenerators.push_back(_aSpring);
+
+	// Bouyancy
+	model = *Models::Springs[3];
+	model.pos = { 0, 10 ,0 };
+	Particle* p4 = new Particle(model);
+	model = *Models::Springs[4];
+	model.pos = { 30, 10 ,0 };
+	Particle* p5 = new Particle(model);
+	model = *Models::Springs[5];
+	model.pos = { -30, 10 ,0 };
+	Particle* p6 = new Particle(model);
+	_particles.push_back(p4);
+	_particles.push_back(p5);
+	_particles.push_back(p6);
+
+	BouyancyForceGenerator* _water = new BouyancyForceGenerator(0, 1000);
+	_forceGenerators.push_back(_water); 
+	_pFR->addRegistry(_water, p4);
+	_pFR->addRegistry(_water, p5);
+	_pFR->addRegistry(_water, p6);
 }

@@ -19,6 +19,7 @@
 #include "ParticleDragGenerator.h"
 #include "Whirlwind.h"
 #include "ExplosionForceGenerator.h"
+#include "BouyancyForceGenerator.h"
 
 #include <iostream>
 
@@ -46,6 +47,8 @@ std::vector<Particle*> particles;
 GaussianParticleGenerator* gen;
 ParticleSystem* _pS;
 ParticleForceRegistry* _pFR;
+
+bool paused = false;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -117,8 +120,9 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
-
-	_pS->update(t);
+	if (!paused) {
+		_pS->update(t);
+	}
 
 #pragma region projectiles
 	//for (auto it = projectiles.begin(); it != projectiles.end();) {
@@ -213,6 +217,17 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case 'K':
 		_pS->generateSpring();
+		break;
+	case 'P':
+		paused = !paused;
+		break;
+	case '+':
+		paused = true;
+		std::cout << "New K constant: ";
+		double k;
+		cin >> k;
+		_pS->changeConstantSpring(k);
+		paused = false;
 		break;
 	default:
 		break;

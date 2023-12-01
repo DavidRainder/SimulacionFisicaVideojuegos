@@ -255,6 +255,7 @@
   <ItemGroup>
     <ClCompile Include="AnchoredSpringFG.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
+    <ClCompile Include="BouyancyForceGenerator.cpp" />
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="ExplosionForceGenerator.cpp" />
     <ClCompile Include="FireworkModels.cpp" />
@@ -275,6 +276,7 @@
   <ItemGroup>
     <ClInclude Include="AnchoredSpringFG.h" />
     <ClInclude Include="BoundingBox.h" />
+    <ClInclude Include="BouyancyForceGenerator.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="ExplosionForceGenerator.h" />
