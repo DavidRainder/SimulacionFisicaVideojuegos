@@ -21,6 +21,8 @@
 #include "ExplosionForceGenerator.h"
 #include "BouyancyForceGenerator.h"
 
+#include "RigidSolid.h"
+
 #include <iostream>
 
 std::string display_text = "This is a test";
@@ -42,9 +44,8 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
-std::vector<Projectile*> projectiles;
-std::vector<Particle*> particles;
-ParticleSystem<Particle>* _pS;
+ParticleSystem<Particle, Particle_config>* _pS;
+ParticleSystem<RigidSolid, RigidSolid_config>* _rSS;
 ParticleForceRegistry<Particle>* _pFR;
 
 bool paused = false;
@@ -75,7 +76,8 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	_pS = new ParticleSystem<Particle>();
+	_pS = new ParticleSystem<Particle, Particle_config>();
+	_rSS = new ParticleSystem<RigidSolid, RigidSolid_config>();
 
 	//Vector3 gravity = Vector3(0.0f,-9.8f,0.0f);
 
@@ -160,12 +162,6 @@ void cleanupPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
 
-	for (int i = 0; i < projectiles.size(); ++i) {
-		delete projectiles[i];
-	}
-
-	projectiles.clear();
-
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
 	gDispatcher->release();
@@ -210,6 +206,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	}
 	case 'G': {
+
 		break;
 	}
 	case 'K':

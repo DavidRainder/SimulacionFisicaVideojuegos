@@ -12,14 +12,14 @@
 using namespace std;
 
 #pragma once
-template<class T>
+template<class T, class Model_Config>
 class ParticleSystem
 {
 private:
 	const int MAX_PARTICLES = 5000;
 	list<T*> _particles;
-	std::list<ParticleGenerator<T>*> _particleGenerators;
-	std::unordered_map<string, ParticleGenerator<T>*> _particleGeneratorByName;
+	std::list<ParticleGenerator<T, Model_Config>*> _particleGenerators;
+	std::unordered_map<string, ParticleGenerator<T, Model_Config>*> _particleGeneratorByName;
 
 	std::list<ForceGenerator<T>*> _forceGenerators;
 	ParticleForceRegistry<T>* _pFR;
@@ -82,7 +82,7 @@ public:
 		}
 	}
 
-	void addGenerator(ParticleGenerator<T>* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG; }
+	void addGenerator(ParticleGenerator<T, Model_Config>* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG; }
 
 	void addForceGenerator(ForceGenerator<T>* _fG) { 
 		_forceGenerators.push_back(_fG);
@@ -91,7 +91,7 @@ public:
 		}
 	}
 
-	void addParticlesToRegistry(list<Particle*> particles) {
+	void addParticlesToRegistry(list<T*> particles) {
 		for (auto it : _forceGenerators) {
 			for (auto ot : particles) {
 				_pFR->addRegistry(it, ot);
@@ -99,7 +99,7 @@ public:
 		}
 	}
 
-	ParticleGenerator<T>* getGenerator(string name) { return _particleGeneratorByName[name]; };
+	ParticleGenerator<T, Model_Config>* getGenerator(string name) { return _particleGeneratorByName[name]; };
 
 	void generateSpring() {
 		// 2 particles

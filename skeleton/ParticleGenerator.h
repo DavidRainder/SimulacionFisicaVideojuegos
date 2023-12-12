@@ -6,7 +6,7 @@
 #include <chrono>
 #include "FireworkModels.h"
 
-template<class T>
+template<class T, class Model_Config>
 class ParticleGenerator
 {
 /// <summary>
@@ -17,7 +17,7 @@ protected:
 	std::string name;
 	Vector3 _avgSpeed, _avgPos;
 	int _numParticles;
-	std::vector<Particle_config*> models;
+	std::vector<Model_Config*> models;
 	void Destroy() { destroy = true; }
 public:
 	void changePos(Vector3 pos) { _avgPos = pos; }
@@ -27,11 +27,11 @@ public:
 	ParticleGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos) : name(name), _avgSpeed(avgSpeed),
 		_avgPos(avgPos) {
 	};
-	int setParticleModel(Particle_config* model) {
-		models.push_back(new Particle_config(*model));
+	int setParticleModel(Model_Config* model) {
+		models.push_back(new Model_Config(*model));
 		return models.size() - 1;
 	}
-	void changeParticleModel(Particle_config* model, int index) {
+	void changeParticleModel(Model_Config* model, int index) {
 		try {
 			models[index] = model;
 		}
@@ -43,11 +43,11 @@ public:
 	virtual std::list<T*> generateParticles(double t) = 0;
 };
 
-template <class T>
-class GaussianParticleGenerator : public ParticleGenerator<T> {
+template <class T, class Model_Config>
+class GaussianParticleGenerator : public ParticleGenerator<T, Model_Config> {
 public:
 	GaussianParticleGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos, Vector3 variation) :
-		ParticleGenerator<T>(name, avgSpeed, avgPos), gen(std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count())) {
+		ParticleGenerator<T, Model_Config>(name, avgSpeed, avgPos), gen(std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count())) {
 		vX = new std::normal_distribution<float>(avgSpeed.x, variation.x);
 		vY = new std::normal_distribution<float>(avgSpeed.y, variation.y);
 		vZ = new std::normal_distribution<float>(avgSpeed.z, variation.z);
@@ -70,11 +70,11 @@ protected:
 	std::normal_distribution<float>* vZ;
 };
 
-template <class T>
-class FireworkExplosionGenerator : public ParticleGenerator<T> {
+template <class T, class Model_Config>
+class FireworkExplosionGenerator : public ParticleGenerator<T, Model_Config> {
 public:
 	FireworkExplosionGenerator(int generation, std::string name, Vector3 avgSpeed, Vector3 avgPos, int numParticles)
-		: ParticleGenerator<T>(name, avgSpeed, avgPos), numParticles(numParticles), generation(generation) {
+		: ParticleGenerator<T, Model_Config>(name, avgSpeed, avgPos), numParticles(numParticles), generation(generation) {
 		models = Models::Fireworks;
 	}
 	std::list<Particle*> generateParticles(double t) {
@@ -96,7 +96,7 @@ protected:
 	int numParticles;
 };
 
-class FireworkGenerator : public GaussianParticleGenerator<Particle> {
+class FireworkGenerator : public GaussianParticleGenerator<Particle, Particle_config> {
 public:
 	FireworkGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos, Vector3 variation) :
 		GaussianParticleGenerator(name, avgSpeed, avgPos, variation) {
@@ -122,8 +122,8 @@ private:
 	float currentTime = 0;
 };
 
-template <class T>
-class UniformGenerator : public ParticleGenerator<T> {
+template <class T, class Model_Config>
+class UniformGenerator : public ParticleGenerator<T, Model_Config> {
 public:
 
 	UniformGenerator(std::string name, Vector3 avgPos, Vector3 posDesv, Vector3 avgVel, Vector3 velDesv) :
