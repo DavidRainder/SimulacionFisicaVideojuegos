@@ -3,7 +3,7 @@
 #include "ForceGenerator.h"
 #include "core.hpp"
 
-class GravityForceGenerator : public ForceGenerator {
+class GravityForceGenerator : public ForceGenerator<Particle> {
 public:
 	GravityForceGenerator(const Vector3& f, BoundingBox bb = BoundingBox(Point(0, 0, 0), Point(0, 0, 0))) : 
 		ForceGenerator(bb) { _gravity = f; };

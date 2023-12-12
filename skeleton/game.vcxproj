@@ -293,6 +293,7 @@
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
+    <ClInclude Include="RigidSolid.h" />
     <ClInclude Include="SpringForceGenerator.h" />
     <ClInclude Include="Whirlwind.h" />
   </ItemGroup>

@@ -38,8 +38,8 @@ void Particle::integrate(double t) {
 	Vector3 resulting_accel = force * getInvMass();
 	vel += resulting_accel * t; // Ex. 1.3 --> add acceleration
 	vel *= powf(damping, t); // Exercise 1.3 --> add damping
-	pose.p += vel * t; // i don't think its necessary to multiply again by delta_t. 
 	timer += t;
+	pose.p += vel * t; 
 	// Clear accum
 	clearAccum();
 	if (maxTimeAlive > 0 && timer > maxTimeAlive) {
@@ -53,7 +53,7 @@ Firework::Firework(int generation, Vector3 Pos, Vector3 vel, bool usesGravity, f
 	if (generation != 0) {
 		generatesParticles = true;
 		this->_pC = new Particle_config(Pos, vel, damping, maxTimeAlive * 0.7f, scale, usesGravity, mass);
-		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(Pos.x), { 50,50,50 }, Pos, 10);
+		generator = new FireworkExplosionGenerator<Particle>(generation - 1, "Firework " + std::to_string(Pos.x), { 50,50,50 }, Pos, 10);
 		generator->setParticleModel(this->_pC);
 	}
 };
@@ -64,7 +64,7 @@ Firework::Firework(int generation, Vector3 Pos, Vector3 vel, Vector4 color, bool
 	if (generation != 0) {
 		generatesParticles = true;
 		this->_pC = new Particle_config(Pos, vel, damping, maxTimeAlive * 0.7f, scale, usesGravity, mass, Sphere, color);
-		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(Pos.x), { 50,50,50 }, Pos, 10);
+		generator = new FireworkExplosionGenerator<Particle>(generation - 1, "Firework " + std::to_string(Pos.x), { 50,50,50 }, Pos, 10);
 		Particle_config newPC = Particle_config((*this->_pC));
 		generator->setParticleModel(_pC);
 	}
@@ -75,7 +75,7 @@ Firework::Firework(int generation, Particle_config& _pC) :
 	if (generation != 0) {
 		generatesParticles = true;
 		this->_pC = new Particle_config(_pC);
-		generator = new FireworkExplosionGenerator(generation - 1, "Firework " + std::to_string(_pC.pos.x), { 50,50,50 }, _pC.pos, 10);
+		generator = new FireworkExplosionGenerator<Particle>(generation - 1, "Firework " + std::to_string(_pC.pos.x), { 50,50,50 }, _pC.pos, 10);
 		generator->setParticleModel(this->_pC);
 	}
 };

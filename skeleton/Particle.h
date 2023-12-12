@@ -1,6 +1,7 @@
 #include "RenderUtils.hpp"
 #pragma once
 
+template<class T>
 class ParticleGenerator;
 
 enum ParticleType { Sphere, Cube, Plane };
@@ -54,13 +55,13 @@ public:
 	inline float getScale() { return scale; }
 
 	inline bool generatesOnDeath() { return generatesParticles; }
-	inline ParticleGenerator* getPG() { return generator; }
+	inline ParticleGenerator<Particle>* getPG() { return generator; }
 	inline void addForce(const Vector3& f) { force += f; }
 protected:
 	inline void clearAccum() { force *= 0.0f; }; // clear accumulated force
 	Vector3 force = {0,0,0}; // accumulated force
 	float mass;
-	ParticleGenerator* generator = nullptr;
+	ParticleGenerator<Particle>* generator = nullptr;
 	bool generatesParticles = false;
 	bool usesGravity;
 	bool destroy = false;

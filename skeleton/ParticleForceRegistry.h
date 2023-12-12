@@ -2,7 +2,8 @@
 #include <map>
 #include "ForceGenerator.h"
 
-class ParticleForceRegistry : public std::multimap<Particle*, ForceGenerator*> {
+template<class T>
+class ParticleForceRegistry : public std::multimap<T*, ForceGenerator<T>*> {
 public:
 	bool updateForces(double t) {
 		bool destroyGen = false;
@@ -23,11 +24,11 @@ public:
 		return destroyGen;
 	}
 
-	void addRegistry(ForceGenerator* fG, Particle* p) {
+	void addRegistry(ForceGenerator<T>* fG, T* p) {
 		emplace(p, fG);
 	}
 
-	void deleteParticleRegistry(Particle* p) {
+	void deleteParticleRegistry(T* p) {
 		erase(p); // i have changed the multimap parameters to make this method 
 				  // much more efficient (O(logN) rather than O(N));
 	}

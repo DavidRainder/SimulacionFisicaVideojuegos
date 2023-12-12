@@ -21,9 +21,9 @@ namespace Models {
 		new Particle_config(0.998f, 240, .5f, false, 1.f, Sphere),
 		new Particle_config(0.998f, 240, .5f, false, 1.f, Sphere),
 		new Particle_config(0.998f, 240, .5f, false, 1.f, Sphere),
-		new Particle_config(0.998f, 240, 3.0f, false, 100.f, Sphere),
-		new Particle_config(0.998f, 240, 1.5f, false, 50.f, Sphere),
-		new Particle_config(0.998f, 240, 5.0f, false, 500.f, Sphere)
+		new Particle_config(0.9f, 240, .5f, false, 1.f, Sphere),
+		new Particle_config(0.9f, 240, 1.5f, false, 50.f, Sphere),
+		new Particle_config(0.9f, 240, 5.0f, false, 500.f, Sphere)
 	};
 
 	static std::vector<Particle_config*> Water{

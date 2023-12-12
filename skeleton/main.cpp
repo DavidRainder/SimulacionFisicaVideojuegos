@@ -44,9 +44,8 @@ ContactReportCallback gContactReportCallback;
 
 std::vector<Projectile*> projectiles;
 std::vector<Particle*> particles;
-GaussianParticleGenerator* gen;
-ParticleSystem* _pS;
-ParticleForceRegistry* _pFR;
+ParticleSystem<Particle>* _pS;
+ParticleForceRegistry<Particle>* _pFR;
 
 bool paused = false;
 
@@ -76,7 +75,7 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	_pS = new ParticleSystem();
+	_pS = new ParticleSystem<Particle>();
 
 	//Vector3 gravity = Vector3(0.0f,-9.8f,0.0f);
 
@@ -191,28 +190,26 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'B':
 	{		
 		BoundingBox bb = BoundingBox(Point(-30, -30, -30), Point(30, 30, 30));
-		_pS->addForceGenerator(new ExplosionForceGenerator(Vector3(0, 50, 0), 100.0f, 200, bb, 10.0f));
+		_pS->addForceGenerator(new ExplosionForceGenerator<Particle>(Vector3(0, 50, 0), 100.0f, 200, bb, 10.0f));
 		break;
 	}
 	case 'E': {
 		BoundingBox smallBB = BoundingBox(Point(-50, -50, -50), Point(50, 50, 50));
 		BoundingBox bigBB = BoundingBox(Point(-100, -100, -100), Point(100, 100, 100));
-		_pS->addForceGenerator(new WhirlwindForceGenerator(Vector3(0, 0, 0), 1.0f,
+		_pS->addForceGenerator(new WhirlwindForceGenerator<Particle>(Vector3(0, 0, 0), 1.0f,
 			bigBB, 10.0f));
 		break;
 	}
 	case 'C': {
 		BoundingBox BB = BoundingBox(Point(-100, 30, -100), Point(100, 60, 100));
-		_pS->addForceGenerator(new ParticleDragGenerator(Vector3(0, 15, -15), .5f, 0, BB, 10.0f));
+		_pS->addForceGenerator(new ParticleDragGenerator<Particle>(Vector3(0, 15, -15), .5f, 0, BB, 10.0f));
 		break;
 	}
 	case ' ': {
-		_pS->addForceGenerator(new ExplosionForceGenerator(Vector3(0, 50, 0), 100000.0f, 2000));
+		_pS->addForceGenerator(new ExplosionForceGenerator<Particle>(Vector3(0, 50, 0), 100000.0f, 2000));
 		break;
 	}
 	case 'G': {
-		Vector3 gravity = Vector3(0.0f, -9.8f, 0.0f);
-		_pS->addForceGenerator(new GravityForceGenerator(gravity));
 		break;
 	}
 	case 'K':

@@ -1,6 +1,8 @@
 #include "Particle.h"
 #include "BoundingBox.h"
 #pragma once
+
+template <class T>
 class ForceGenerator {
 public:
 	ForceGenerator(BoundingBox bb = BoundingBox(Point(0,0,0), Point(0,0,0)), float duration = 1e18) : _bb(bb), _duration(duration) {
@@ -9,7 +11,7 @@ public:
 	ForceGenerator(float duration) : _duration(duration), _bb(BoundingBox(Point(0, 0, 0), Point(0, 0, 0))) {
 		usesBB = false;
 	};
-	virtual void updateForce(Particle* particle, double duration) = 0;
+	virtual void updateForce(T* particle, double duration) = 0;
 	std::string _name;
 	double _t = 0.0; // If starting negative --> eternal
 	double _duration = -1e10;
