@@ -31,7 +31,7 @@ Particle::Particle(Vector3 pos, Vector3 vel, ParticleType type, Vector4 color, b
 	rI = new RenderItem(shape, &pose, color); // color
 }
 
-Particle::Particle(const Particle_config& _pC) : Particle(_pC.pos, _pC.vel, _pC._type, _pC.color, _pC.usesGravity, _pC.mass, _pC.scale, _pC.damping, _pC.maxTimeAlive){}
+Particle::Particle(physx::PxScene* _scene, const Particle_config& _pC) : Particle(_pC.pos, _pC.vel, _pC._type, _pC.color, _pC.usesGravity, _pC.mass, _pC.scale, _pC.damping, _pC.maxTimeAlive){}
 
 void Particle::integrate(double t) {
 	// Get the accel considering the force accum

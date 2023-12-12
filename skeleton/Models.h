@@ -1,5 +1,6 @@
 #pragma once
 #include "Particle.h"
+#include "RigidSolid.h"
 
 namespace Models {
 	static std::vector<Particle_config*> Fireworks {
@@ -28,5 +29,12 @@ namespace Models {
 
 	static std::vector<Particle_config*> Water{
 		new Particle_config(0.998f, 240, 1.0f, false, 1.0f, Plane, {0,.1f,1,1})
+	};
+		
+	static std::vector<RigidSolid_config*> Solid{
+		new RigidSolid_config(1.0f, DYNAMIC, BOX),
+		new RigidSolid_config(1.0f, STATIC, BOX),
+		new RigidSolid_config(1.0f, DYNAMIC, SPHERE),
+		new RigidSolid_config(1.0f, STATIC, SPHERE),
 	};
 }

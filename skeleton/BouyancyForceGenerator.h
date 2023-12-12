@@ -11,7 +11,7 @@ public:
         ForceGenerator(), _liquid_density(d) {
         Particle_config model = *Models::Water[0];
         model.pos = Vector3(0, h, 0);
-        _liquid_particle = new Particle(model);
+        _liquid_particle = new Particle(nullptr, model);
     };
 
     void updateForce(T* particle, double t) override

@@ -20,12 +20,13 @@ private:
 	list<T*> _particles;
 	std::list<ParticleGenerator<T, Model_Config>*> _particleGenerators;
 	std::unordered_map<string, ParticleGenerator<T, Model_Config>*> _particleGeneratorByName;
+	physx::PxScene* scene;
 
 	std::list<ForceGenerator<T>*> _forceGenerators;
 	ParticleForceRegistry<T>* _pFR;
 	std::list<SpringForceGenerator<T>*> _springGenerators;
 public:
-	ParticleSystem() : _pFR(new ParticleForceRegistry<T>()) {};
+	ParticleSystem(physx::PxScene* _scene) : _pFR(new ParticleForceRegistry<T>()), scene(_scene) {};
 	~ParticleSystem() {
 		for (auto it = _particles.begin(); it != _particles.end();) {
 			_pFR->deleteParticleRegistry((*it));
@@ -82,7 +83,9 @@ public:
 		}
 	}
 
-	void addGenerator(ParticleGenerator<T, Model_Config>* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG; }
+	void addGenerator(ParticleGenerator<T, Model_Config>* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG;
+		_pG->setScene(scene);
+	}
 
 	void addForceGenerator(ForceGenerator<T>* _fG) { 
 		_forceGenerators.push_back(_fG);
@@ -106,10 +109,10 @@ public:
 		Particle_config model = *Models::Springs[0];
 		model.vel = { 0,0,0 };
 		model.pos = Vector3(25, 50, 0);
-		Particle* p1 = new Particle(model);
+		Particle* p1 = new Particle(nullptr, model);
 		model = *Models::Springs[1];
 		model.pos = Vector3(25, 70, 0);
-		Particle* p2 = new Particle(model);
+		Particle* p2 = new Particle(nullptr, model);
 		SpringForceGenerator<T>* _spring1 = new SpringForceGenerator<T>(1, 10, p2);
 		_pFR->addRegistry(_spring1, p1);
 		SpringForceGenerator<T>* _spring2 = new SpringForceGenerator<T>(1, 10, p1);
@@ -124,7 +127,7 @@ public:
 		// fixed
 		model = *Models::Springs[2];
 		model.pos = { 50, 65, 0 };
-		Particle* p3 = new Particle(model);
+		Particle* p3 = new Particle(nullptr, model);
 		AnchoredSpringFG<T>* _aSpring = new AnchoredSpringFG<T>(1, 30, { 50,75,0 });
 		_pFR->addRegistry(_aSpring, p3);
 		_particles.push_back(p3);
@@ -134,13 +137,13 @@ public:
 		// Bouyancy
 		model = *Models::Springs[3];
 		model.pos = { 0, 10 ,0 };
-		Particle* p4 = new Particle(model);
+		Particle* p4 = new Particle(nullptr, model);
 		model = *Models::Springs[4];
 		model.pos = { 30, 10 ,0 };
-		Particle* p5 = new Particle(model);
+		Particle* p5 = new Particle(nullptr, model);
 		model = *Models::Springs[5];
 		model.pos = { -30, 10 ,0 };
-		Particle* p6 = new Particle(model);
+		Particle* p6 = new Particle(nullptr, model);
 		_particles.push_back(p4);
 		_particles.push_back(p5);
 		_particles.push_back(p6);

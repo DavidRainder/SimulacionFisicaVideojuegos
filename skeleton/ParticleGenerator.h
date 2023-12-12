@@ -4,7 +4,7 @@
 #include <list>
 #include <random>
 #include <chrono>
-#include "FireworkModels.h"
+#include "Models.h"
 
 template<class T, class Model_Config>
 class ParticleGenerator
@@ -19,10 +19,12 @@ protected:
 	int _numParticles;
 	std::vector<Model_Config*> models;
 	void Destroy() { destroy = true; }
+	physx::PxScene* _scene = nullptr;
 public:
 	void changePos(Vector3 pos) { _avgPos = pos; }
 	inline bool getDestroy() { return destroy; }
 	inline std::string getName() { return name; }
+	void setScene(physx::PxScene* scene) { _scene = scene; }
 
 	ParticleGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos) : name(name), _avgSpeed(avgSpeed),
 		_avgPos(avgPos) {
@@ -57,7 +59,7 @@ public:
 		auto model = models[rand() % models.size()];
 		model->vel = Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen));
 		model->pos = _avgPos;
-		T* newParticle = new T(*model);
+		T* newParticle = new T(nullptr, *model);
 		_list.push_back(newParticle);
 		return _list;
 	}
@@ -127,7 +129,7 @@ class UniformGenerator : public ParticleGenerator<T, Model_Config> {
 public:
 
 	UniformGenerator(std::string name, Vector3 avgPos, Vector3 posDesv, Vector3 avgVel, Vector3 velDesv) :
-		ParticleGenerator<T>(name, avgVel, avgPos), gen(std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count())) {
+		ParticleGenerator<T, Model_Config>(name, avgVel, avgPos), gen(std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count())) {
 
 		Vector3 pDesv = posDesv / 2;
 		Vector3 vDesv = velDesv / 2;
@@ -145,8 +147,9 @@ public:
 		std::list<T*> _list;
 		auto model = models[rand() % models.size()];
 		model->pos = Vector3(_avgPos + Vector3((*posX)(gen), (*posY)(gen), (*posZ)(gen)));
-		model->vel = Vector3(_avgSpeed + Vector3((*velX)(gen), (*velY)(gen), (*velZ)(gen)));
-		_list.push_back(new T(*model));
+		// model->vel = Vector3(_avgSpeed + Vector3((*velX)(gen), (*velY)(gen), (*velZ)(gen)));
+		// aquí tengo que meter la escena, pero no sé cómo hehe
+		_list.push_back(new T(_scene, *model));
 		return _list;
 	}
 private:

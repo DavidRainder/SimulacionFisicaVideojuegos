@@ -76,8 +76,8 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	_pS = new ParticleSystem<Particle, Particle_config>();
-	_rSS = new ParticleSystem<RigidSolid, RigidSolid_config>();
+	_pS = new ParticleSystem<Particle, Particle_config>(gScene);
+	_rSS = new ParticleSystem<RigidSolid, RigidSolid_config>(gScene);
 
 	//Vector3 gravity = Vector3(0.0f,-9.8f,0.0f);
 
@@ -123,6 +123,7 @@ void stepPhysics(bool interactive, double t)
 	PX_UNUSED(interactive);
 	if (!paused) {
 		_pS->update(t);
+		_rSS->update(t);
 	}
 
 #pragma region projectiles
@@ -206,7 +207,11 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	}
 	case 'G': {
-
+		UniformGenerator<RigidSolid, RigidSolid_config>* _gen = new UniformGenerator<RigidSolid, RigidSolid_config>("rigidSolid_uniform",
+			Vector3(0, 0, 0), Vector3(1, .1f, 1), Vector3(.1f, 20, .1f), Vector3(.1f, 5, .1f));
+		_gen->setParticleModel(Models::Solid[0]);
+		_gen->setParticleModel(Models::Solid[2]);
+		_rSS->addGenerator(_gen);
 		break;
 	}
 	case 'K':

@@ -38,7 +38,7 @@ class Particle
 public:
 	Particle(Vector3 Pos, Vector3 vel, ParticleType type = Sphere, bool usesGravity = false, float mass = 1.0f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
 	Particle(Vector3 Pos, Vector3 vel, ParticleType type = Sphere, Vector4 color = { (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, (float)(rand() % 256) / 255, 1 }, bool usesGravity = false, float mass = 1.0f, float scale = 1, float damping = 0.98f, float maxTimeAlive = 3.0f);
-	Particle(const Particle_config& _pC);
+	Particle(physx::PxScene* _scene, const Particle_config& _pC);
 	virtual ~Particle() {
 		if (rI != nullptr) rI->release();
 		rI = nullptr;
