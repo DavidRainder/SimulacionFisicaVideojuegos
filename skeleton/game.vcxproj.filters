@@ -12,18 +12,8 @@
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="ParticleSystem.cpp" />
-    <ClCompile Include="ParticleGenerator.cpp" />
-    <ClCompile Include="BoundingBox.cpp" />
-    <ClCompile Include="FireworkModels.cpp" />
     <ClCompile Include="GravityForceGenerator.cpp" />
     <ClCompile Include="Plane.cpp" />
-    <ClCompile Include="ParticleDragGenerator.cpp" />
-    <ClCompile Include="Whirlwind.cpp" />
-    <ClCompile Include="ExplosionForceGenerator.cpp" />
-    <ClCompile Include="SpringForceGenerator.cpp" />
-    <ClCompile Include="AnchoredSpringFG.cpp" />
-    <ClCompile Include="BouyancyForceGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
