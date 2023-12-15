@@ -16,7 +16,7 @@ template<class T, class Model_Config>
 class ParticleSystem
 {
 private:
-	const int MAX_PARTICLES = 5000;
+	const int MAX_PARTICLES = 2000;
 	list<T*> _particles;
 	std::list<ParticleGenerator<T, Model_Config>*> _particleGenerators;
 	std::unordered_map<string, ParticleGenerator<T, Model_Config>*> _particleGeneratorByName;

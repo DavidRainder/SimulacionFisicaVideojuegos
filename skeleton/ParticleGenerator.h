@@ -59,7 +59,7 @@ public:
 		auto model = models[rand() % models.size()];
 		model->vel = Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen));
 		model->pos = _avgPos;
-		T* newParticle = new T(nullptr, *model);
+		T* newParticle = new T(_scene, *model);
 		_list.push_back(newParticle);
 		return _list;
 	}
@@ -147,7 +147,7 @@ public:
 		std::list<T*> _list;
 		auto model = models[rand() % models.size()];
 		model->pos = Vector3(_avgPos + Vector3((*posX)(gen), (*posY)(gen), (*posZ)(gen)));
-		// model->vel = Vector3(_avgSpeed + Vector3((*velX)(gen), (*velY)(gen), (*velZ)(gen)));
+		model->vel = Vector3(_avgSpeed + Vector3((*velX)(gen), (*velY)(gen), (*velZ)(gen)));
 		// aquí tengo que meter la escena, pero no sé cómo hehe
 		_list.push_back(new T(_scene, *model));
 		return _list;

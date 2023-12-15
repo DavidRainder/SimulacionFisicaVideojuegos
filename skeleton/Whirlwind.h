@@ -8,6 +8,7 @@ public:
 		ForceGenerator(bb, duration), k(k), centerPos(centerPos) {};
 	WhirlwindForceGenerator(Vector3 centerPos, const float k, float duration = 1e18) :
 		ForceGenerator(duration), k(k), centerPos(centerPos) {};
+
 	void updateForce(T* p, double t) {
 		if (fabs(p->getInvMass()) < -1e10) return;
 		Vector3 pPos = p->getPos();

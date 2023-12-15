@@ -30,9 +30,13 @@ namespace Models {
 	static std::vector<Particle_config*> Water{
 		new Particle_config(0.998f, 240, 1.0f, false, 1.0f, Plane, {0,.1f,1,1})
 	};
-		
+	
+	static std::vector<RigidSolid_config*> Solid_Ground{
+		new RigidSolid_config(1.0f, STATIC, PLANE, -1, 50, Vector4(0.4f,.4f,.4f,1.f))
+	};
+
 	static std::vector<RigidSolid_config*> Solid{
-		new RigidSolid_config(1.0f, DYNAMIC, BOX),
+		new RigidSolid_config(1.0f, DYNAMIC, BOX, 3.f, 1.0f, Vector4(0.3, 0, 0, 1)),
 		new RigidSolid_config(1.0f, STATIC, BOX),
 		new RigidSolid_config(1.0f, DYNAMIC, SPHERE),
 		new RigidSolid_config(1.0f, STATIC, SPHERE),
