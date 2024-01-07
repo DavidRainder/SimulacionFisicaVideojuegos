@@ -1,3 +1,4 @@
+#pragma once
 // This code contains NVIDIA Confidential Information and is disclosed to you
 // under a form of NVIDIA software license agreement provided separately to you.
 //
@@ -289,7 +290,6 @@ void startRender(const PxVec3& cameraEye, const PxVec3& cameraDir, PxReal clipNe
 	
 	// Display text
 	glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
-	// drawText(display_text, 0, 0);
 
 	// Setup camera
 	glMatrixMode(GL_PROJECTION);

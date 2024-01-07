@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 
 #include "PxPhysicsAPI.h"
@@ -137,7 +138,9 @@ void exitCallback(void)
 void renderLoop()
 {
 	StartCounter();
-	sCamera = new Camera(PxVec3(50.0f, 50.0f, 50.0f), PxVec3(-0.6f,-0.2f,-0.7f));
+	Vector3 camPos = Vector3(10.f, 10.f, -5.) * 2;
+	Vector3 camLookingDir = Vector3(-1, -0.5f, 0.5f);
+	sCamera = new Camera(camPos, camLookingDir);
 
 	setupDefaultWindow("Simulacion Fisica Videojuegos");
 	setupDefaultRenderState();
@@ -175,6 +178,12 @@ double GetLastTime()
 Camera* GetCamera()
 {
 	return sCamera;
+}
+
+void SetCamera(Vector3 pos, Vector3 lookingDir) {
+	pos.y = sCamera->getTransform().p.y;
+	delete sCamera;
+	sCamera = new Camera(pos, lookingDir);
 }
 
 PxShape* CreateShape(const PxGeometry& geo, const PxMaterial* mat)

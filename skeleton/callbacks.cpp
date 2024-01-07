@@ -1,3 +1,4 @@
+#pragma once
 #include "callbacks.hpp"
 
 extern void onCollision(physx::PxActor* actor1, physx::PxActor* actor2);

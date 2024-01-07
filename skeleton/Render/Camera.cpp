@@ -1,3 +1,4 @@
+#pragma once
 // This code contains NVIDIA Confidential Information and is disclosed to you
 // under a form of NVIDIA software license agreement provided separately to you.
 //
@@ -62,10 +63,10 @@ bool Camera::handleKey(unsigned char key, int x, int y, float speed)
 	PxVec3 viewY = mDir.cross(PxVec3(0,1,0)).getNormalized();
 	switch(toupper(key))
 	{
-	case 'W':	mEye += mDir*2.0f*speed;		break;
-	case 'S':	mEye -= mDir*2.0f*speed;		break;
-	case 'A':	mEye -= viewY*2.0f*speed;		break;
-	case 'D':	mEye += viewY*2.0f*speed;		break;
+	//case 'W':	mEye += mDir*2.0f*speed;		break;
+	//case 'S':	mEye -= mDir*2.0f*speed;		break;
+	//case 'A':	mEye -= viewY*2.0f*speed;		break;
+	//case 'D':	mEye += viewY*2.0f*speed;		break;
 	default:							return false;
 	}
 	return true;
@@ -76,6 +77,10 @@ void Camera::handleAnalogMove(float x, float y)
 	PxVec3 viewY = mDir.cross(PxVec3(0,1,0)).getNormalized();
 	mEye += mDir*y;
 	mEye += viewY*x;
+}
+
+void Camera::move(PxVec3 movement){
+	mEye += movement;
 }
 
 void Camera::handleMotion(int x, int y)

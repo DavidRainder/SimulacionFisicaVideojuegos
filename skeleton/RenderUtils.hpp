@@ -1,3 +1,4 @@
+#pragma once
 #ifndef __RENDER_UTILS_H__
 #define __RENDER_UTILS_H__
 
@@ -61,6 +62,7 @@ public:
 
 double GetLastTime();
 Camera* GetCamera();
+void SetCamera(Vector3 pos, Vector3 dir);
 
 physx::PxShape* CreateShape(const physx::PxGeometry& geo, const physx::PxMaterial* mat = nullptr);
 

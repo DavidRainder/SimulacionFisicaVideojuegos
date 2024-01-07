@@ -1,3 +1,4 @@
+#pragma once
 #include "Particle.h"
 #include "ParticleGenerator.h"
 #include <iostream>

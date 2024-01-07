@@ -1,3 +1,4 @@
+#pragma once
 #include <ctype.h>
 
 #include <PxPhysicsAPI.h>
@@ -10,6 +11,7 @@
 
 #include "Projectile.h"
 #include "ParticleSystem.h"
+#include "DroppingObjectsManager.h"
 #include "Plane.h"
 
 #include "ForceGenerator.h"
@@ -17,38 +19,52 @@
 
 #include "ParticleForceRegistry.h"
 #include "ParticleDragGenerator.h"
-#include "Whirlwind.h"
 #include "ExplosionForceGenerator.h"
 #include "BouyancyForceGenerator.h"
+#include "Whirlwind.h"
 
 #include "RigidSolid.h"
 
 #include <iostream>
 
-std::string display_text = "This is a test";
+
+std::string										display_text = "This is a test";
 
 using namespace physx;
 
-PxDefaultAllocator		gAllocator;
-PxDefaultErrorCallback	gErrorCallback;
+PxDefaultAllocator								gAllocator;
+PxDefaultErrorCallback							gErrorCallback;
 
-PxFoundation*			gFoundation = NULL;
-PxPhysics*				gPhysics	= NULL;
+PxFoundation*									gFoundation = NULL;
+PxPhysics*										gPhysics	= NULL;
 
 
-PxMaterial*				gMaterial	= NULL;
+PxMaterial*										gMaterial	= NULL;
 
-PxPvd*                  gPvd        = NULL;
+PxPvd*											gPvd        = NULL;
 
-PxDefaultCpuDispatcher*	gDispatcher = NULL;
-PxScene*				gScene      = NULL;
-ContactReportCallback gContactReportCallback;
+PxDefaultCpuDispatcher*							gDispatcher = NULL;
+PxScene*										gScene      = NULL;
+ContactReportCallback							gContactReportCallback;
 
-ParticleSystem<Particle, Particle_config>* _pS;
-ParticleSystem<RigidSolid, RigidSolid_config>* _rSS;
-ParticleForceRegistry<Particle>* _pFR;
+ParticleSystem<Particle, Particle_config>*		_pS;
+ParticleSystem<RigidSolid, RigidSolid_config>*	_rSS;
+ParticleForceRegistry<Particle>*				_pFR;
 
-bool paused = false;
+bool											paused = false;
+
+RigidSolid* ground;
+RigidSolid* walls[4];
+
+DroppingObjectsManager* dropMngr = nullptr;
+
+void initManagers() {
+
+}
+
+void initGame() {
+
+}
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -74,14 +90,10 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
+	dropMngr = new DroppingObjectsManager(gScene, gPhysics, Vector3(25, 3.f, 25));
 
-	_pS = new ParticleSystem<Particle, Particle_config>(gScene);
-	_rSS = new ParticleSystem<RigidSolid, RigidSolid_config>(gScene);
-
-	RigidSolid* _ground = new RigidSolid(gScene, *Models::Solid_Ground[0]);
+	ground = new RigidSolid(gScene, gPhysics, *Models::Solid_Ground[0]);
 }
-
 
 // Function to configure what happens in each step of physics
 // interactive: true if the game is rendering, false if it offline
@@ -90,36 +102,8 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 	if (!paused) {
-		_pS->update(t);
-		_rSS->update(t);
+		dropMngr->update(t);
 	}
-
-#pragma region projectiles
-	//for (auto it = projectiles.begin(); it != projectiles.end();) {
-	//	if (!(*it)->getDestroy()) {
-	//		(*it)->integrate(t); ++it;
-	//	}
-	//	else
-	//	{
-	//		delete (*it);
-	//		it = projectiles.erase(it);
-	//	}
-	//}
-#pragma endregion
-
-#pragma region particles
-	//for (auto it = particles.begin(); it != particles.end();) {
-	//	if ((*it)->getDestroy()) {
-	//		delete (*it);
-	//		it = particles.erase(it);
-	//	}
-	//	else {
-	//		(*it)->integrate(t);
-	//		++it;
-	//	}
-	//}
-#pragma endregion
-
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -150,63 +134,14 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 	switch(toupper(key))
 	{
-	//case 'B': break;
-	//case ' ':	break;
-	case 'B':
-	{		
-		BoundingBox bb = BoundingBox(Point(-30, -30, -30), Point(30, 30, 30));
-		_pS->addForceGenerator(new ExplosionForceGenerator<Particle>(Vector3(0, 50, 0), 100.0f, 200, bb, 10.0f));
-		break;
+		case 'P':
+			paused = !paused;
+			break;
+		default: 
+			break;
 	}
-	case 'E': {
-		BoundingBox smallBB = BoundingBox(Point(-50, -50, -50), Point(50, 50, 50));
-		BoundingBox bigBB = BoundingBox(Point(-100, -100, -100), Point(100, 100, 100));
-		_rSS->addForceGenerator(new WhirlwindForceGenerator<RigidSolid>(Vector3(0, 0, 0), 1.0f,
-			bigBB, 10.0f));
-		break;
-	}
-	case 'C': {
-		BoundingBox BB = BoundingBox(Point(-100, 30, -100), Point(100, 60, 100));
-		_pS->addForceGenerator(new ParticleDragGenerator<Particle>(Vector3(0, 15, -15), .5f, 0, BB, 10.0f));
-		break;
-	}
-	case ' ': {
-		_rSS->addForceGenerator(new ExplosionForceGenerator<RigidSolid>(Vector3(0, 10, 0), 10000.0f, 2000));
-		break;
-	}
-	case 'G': {
-		GaussianParticleGenerator<RigidSolid, RigidSolid_config>* _gen = new GaussianParticleGenerator<RigidSolid, RigidSolid_config>("rigidSolid_uniform",
-			Vector3(0, 10, 0), Vector3(0,10,0), Vector3(5.f, 1, 5.f));
-		_gen->setParticleModel(Models::Solid[0]);
-		_gen->setParticleModel(Models::Solid[2]);
-		_rSS->addGenerator(_gen);
-		break;
-	}
-	case 'Z': {
-		UniformGenerator<RigidSolid, RigidSolid_config>* _gen = new UniformGenerator<RigidSolid, RigidSolid_config>("rigidSolid_uniform",
-			Vector3(0, 10, 0), Vector3(10, .1f, 10), Vector3(.1f, 20, .1f), Vector3(.1f, 5, .1f));
-		_gen->setParticleModel(Models::Solid[0]);
-		_gen->setParticleModel(Models::Solid[2]);
-		_rSS->addGenerator(_gen);
-		break;
-	}
-	case 'K':
-		_pS->generateSpring();
-		break;
-	case 'P':
-		paused = !paused;
-		break;
-	case '+':
-		paused = true;
-		std::cout << "New K constant: ";
-		double k;
-		cin >> k;
-		_pS->changeConstantSpring(k);
-		paused = false;
-		break;
-	default:
-		break;
-	}
+
+	dropMngr->keyPressed(key, camera);
 }
 
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)

@@ -1,5 +1,10 @@
+#pragma once
 #ifndef __CORE_HPP__
 #define __CORE_HPP__
+
+#define PI 3.141592653589793
+enum Solid_Type { STATIC, DYNAMIC };
+enum Shape_Type { SPHERE, BOX, BOX_PIECE, LONG_PIECE, GROUND, PLATFORM, PLANE };
 
 #include "../common/Common/Print.h"
 #include "../common/Common/PVD.h"

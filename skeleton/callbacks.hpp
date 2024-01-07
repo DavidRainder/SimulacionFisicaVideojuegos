@@ -1,3 +1,4 @@
+#pragma once
 #ifndef __CALLBACKS_H__
 #define __CALLBACKS_H__
 

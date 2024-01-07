@@ -1,3 +1,4 @@
+#pragma once
 // This code contains NVIDIA Confidential Information and is disclosed to you
 // under a form of NVIDIA software license agreement provided separately to you.
 //
@@ -44,6 +45,7 @@ public:
 	bool				handleKey(unsigned char key, int x, int y, float speed = 1.0f);
 	void				handleMotion(int x, int y);
 	void				handleAnalogMove(float x, float y);
+	void				move(physx::PxVec3 movement);
 
 	physx::PxVec3		getEye()	const;
 	physx::PxVec3		getDir()	const;

@@ -1,7 +1,6 @@
 #include "RenderUtils.hpp"
+#include "ParticleGenerator.h"
 #pragma once
-enum Solid_Type { STATIC, DYNAMIC };
-enum Shape_Type { SPHERE, BOX, PLANE };
 
 struct RigidSolid_config {
 public:
@@ -33,12 +32,12 @@ class RigidSolid {
 public:
 	// pos, vel, type, color, gravity, mass, 
 	// scale, damping, maxtimealive
-	RigidSolid(physx::PxScene* scene, RigidSolid_config& _config) : _type(_config.type), maxTimeAlive(_config.maxTimeAlive) {
-		constructorAux(scene, _config.shape, _config.pos, _config.vel, _config.density, _config.scale, _config.color);
+	RigidSolid(physx::PxScene* scene, physx::PxPhysics* physics, RigidSolid_config& _config) : _type(_config.type), maxTimeAlive(_config.maxTimeAlive) {
+		constructorAux(scene, physics, _config.shape, _config.pos, _config.vel, _config.density, _config.scale, _config.color);
 	}
-	RigidSolid(physx::PxScene* scene, Solid_Type _type, Shape_Type _shape, Vector3 pos, Vector3 vel, float density, float maxTimeAlive = 3.f, float scale = 1.f,
+	RigidSolid(physx::PxScene* scene, physx::PxPhysics* physics, Solid_Type _type, Shape_Type _shape, Vector3 pos, Vector3 vel, float density, float maxTimeAlive = 3.f, float scale = 1.f,
 		Vector4 color = {255,0,255,1.f}) : _type(_type), maxTimeAlive(maxTimeAlive) {
-		constructorAux(scene, _shape, pos, vel, density, scale, color);
+		constructorAux(scene, physics, _shape, pos, vel, density, scale, color);
 	}
 
 	~RigidSolid() {
@@ -64,6 +63,60 @@ public:
 		return _actor->getGlobalPose().p;
 	}
 
+	/// <summary>
+	/// NUEVO MÉTODO:
+	/// Referencia al PxTransform del sólido rígido
+	/// </summary>
+
+	physx::PxTransform getGlobalPose() {
+		return _actor->getGlobalPose();
+	}
+
+	/// <summary>
+	/// NUEVO MÉTODO:
+	/// Settea el PxTransform del sólido rígido (para aplicar transformaciones)
+	/// </summary>
+
+	void setGlobalPose(physx::PxTransform& const tr) {
+		_actor->setGlobalPose(tr);
+	}
+	
+	/// <summary>
+	/// NUEVO MÉTODO:
+	/// Rota el sólido rígido según los parámetros dados; teniendo en cuenta la rotación actual
+	/// </summary>
+	/// <param name="deg_angle"> ángulo en grados </param>
+	/// <param name="rot_axis"> vector unitario que dice en dónde aplicar las rotaciones </param>
+	void rotate(float deg_angle, const physx::PxVec3& rot_axis) {
+		auto tr = _actor->getGlobalPose();
+		float quat_angle = (deg_angle) * (PI / 180);
+		float sin_quat_angle = sin(quat_angle / 2);
+		float nx = rot_axis.x * sin_quat_angle;
+		float ny = rot_axis.y * sin_quat_angle;
+		float nz = rot_axis.z * sin_quat_angle;
+		float nw = cos(quat_angle / 2);
+
+		tr.q = physx::PxQuat(nx, ny, nz, nw) * tr.q;
+		_actor->setGlobalPose(tr);
+	}
+
+	/// <summary>
+	/// NUEVO MÉTODO
+	/// Settea la posición del Sólido Rígido a la posición global dada
+	/// </summary>
+	/// <param name="newPos"> Nueva posición global </param>
+	void setPos(Vector3 newPos) {
+		auto tr = _actor->getGlobalPose();
+		tr.p = newPos;
+		_actor->setGlobalPose(tr);
+	}
+
+	void setRotation(physx::PxQuat q) {
+		auto tr = _actor->getGlobalPose();
+		tr.q = q;
+		_actor->setGlobalPose(tr);
+	}
+
 	Vector3 getVel() {
 		if (_body != nullptr)
 			return _body->getLinearVelocity();
@@ -85,22 +138,67 @@ public:
 		}
 	};
 	ParticleGenerator<RigidSolid, RigidSolid_config>* getPG() { return _pG; }
+
+	Vector3 halfExtents() { return Vector3(width, height, length); }
+	Vector3 extents() { return Vector3(width * 2, height * 2, length * 2); }
+
+	float getWidth() { return width * 2; }
+	float getHeight() { return height * 2; }
+	float getLength() { return length * 2; }
+
 private:
-	void constructorAux(physx::PxScene* scene, Shape_Type _shape, Vector3 pos, Vector3 vel, float density, float scale, Vector4 color) {
+
+	float width, height, length;
+
+	void constructorAux(physx::PxScene* scene, physx::PxPhysics* physics, Shape_Type _shape, Vector3 pos, Vector3 vel, float density, float scale, Vector4 color) {
 		physx::PxTransform* tr = new physx::PxTransform(pos);
 		physx::PxShape* shape;
 		if (_shape == SPHERE) {
-
-			physx::PxSphereGeometry sphere(scale);
+			width = height = length = scale;
+			physx::PxSphereGeometry sphere(width);
 			shape = CreateShape(sphere);
 		}
 		else if (_shape == BOX) {
-			physx::PxBoxGeometry box(scale, scale, scale);
+			width = height = length = scale;
+			physx::PxBoxGeometry box(width, height, length);
 			shape = CreateShape(box);
 		}
 		else if (_shape == PLANE) {
-			physx::PxBoxGeometry box(scale, 0.01f, scale);
+			width = length = scale;
+			height = scale * 0.01f;
+			physx::PxBoxGeometry box(width, height, length);
 			shape = CreateShape(box);
+		}
+		else if (_shape == GROUND) {
+			width = length = scale;
+			height = scale * 0.01f;
+			physx::PxBoxGeometry box(width, height, length);
+			physx::PxMaterial* mMaterial;
+			mMaterial = physics->createMaterial(1, 1, -1);
+			shape = CreateShape(box, mMaterial);
+		}
+		else if (_shape == PLATFORM) {
+			width = length = scale;
+			height = 1;
+			physx::PxBoxGeometry box(width, height, length);
+			physx::PxMaterial* mMaterial;
+			mMaterial = physics->createMaterial(1, 1, -1);
+			shape = CreateShape(box, mMaterial);
+		}
+		else if (_shape == BOX_PIECE) {
+			width = height = length = scale;
+			physx::PxBoxGeometry box(width, height, length);
+			physx::PxMaterial* mMaterial;
+			mMaterial = physics->createMaterial(1, 1, -1);
+			shape = CreateShape(box, mMaterial);
+		}
+		else if (_shape == LONG_PIECE) {
+			width = height = scale;
+			length = scale*3;
+			physx::PxBoxGeometry box(width, height, length);
+			physx::PxMaterial* mMaterial;
+			mMaterial = physics->createMaterial(10000, 10000, -1);
+			shape = CreateShape(box, mMaterial);
 		}
 
 		switch (_type) {

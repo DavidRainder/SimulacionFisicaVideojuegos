@@ -31,12 +31,27 @@ namespace Models {
 		new Particle_config(0.998f, 240, 1.0f, false, 1.0f, Plane, {0,.1f,1,1})
 	};
 	
+	static std::vector<RigidSolid_config*> Platform{
+		new RigidSolid_config(10000000.0f, STATIC, PLATFORM, -1, 3, Vector4(0.4, 0.4, 0.4, 1)),
+		new RigidSolid_config(10000000.0f, STATIC, PLATFORM, -1, 5, Vector4(0.4, 0.4, 0.4, 1))
+	};
+
 	static std::vector<RigidSolid_config*> Solid_Ground{
-		new RigidSolid_config(1.0f, STATIC, PLANE, -1, 50, Vector4(0.4f,.4f,.4f,1.f))
+		new RigidSolid_config(10000000.0f, STATIC, GROUND, -1, 50, Vector4(0.3, 0, 0, 1))
+	};
+
+	static std::vector<RigidSolid_config*> static_dropping_solids{
+		new RigidSolid_config(1.0f, STATIC, LONG_PIECE, 3.f, 1.0f, Vector4(0, 0, 0.3, 1.f)),
+		new RigidSolid_config(1.0f, STATIC, LONG_PIECE, 3.f, 1.0f, Vector4(0, 0.3, 0, 1.f)),
+	};
+
+	static std::vector<RigidSolid_config*> dynamic_dropped_solids{
+		new RigidSolid_config(1.f, DYNAMIC, LONG_PIECE, 3.f, 1.0f, Vector4(0, 0, 0.3, 1.f)),
+		new RigidSolid_config(1.f, DYNAMIC, LONG_PIECE, 3.f, 1.0f, Vector4(0, 0.3, 0, 1.f)),
 	};
 
 	static std::vector<RigidSolid_config*> Solid{
-		new RigidSolid_config(1.0f, DYNAMIC, BOX, 3.f, 1.0f, Vector4(0.3, 0, 0, 1)),
+		new RigidSolid_config(1.0f, DYNAMIC, BOX, 3.f, 1.0f, Vector4(0.3, 0, 0, 0.2f)),
 		new RigidSolid_config(1.0f, STATIC, BOX),
 		new RigidSolid_config(1.0f, DYNAMIC, SPHERE),
 		new RigidSolid_config(1.0f, STATIC, SPHERE),

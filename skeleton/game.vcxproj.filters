@@ -7,45 +7,122 @@
     <ClCompile Include="Render\Render.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="RenderUtils.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="callbacks.cpp" />
-    <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="GravityForceGenerator.cpp" />
-    <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="GravityForceGenerator.cpp">
+      <Filter>ForceGenerators</Filter>
+    </ClCompile>
+    <ClCompile Include="callbacks.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderUtils.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="DroppingObjectsManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core.hpp" />
     <ClInclude Include="Render\Camera.h">
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Render\Render.h">
       <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="RenderUtils.hpp" />
-    <ClInclude Include="callbacks.hpp" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="Projectile.h" />
-    <ClInclude Include="ParticleSystem.h" />
-    <ClInclude Include="ParticleGenerator.h" />
-    <ClInclude Include="BoundingBox.h" />
-    <ClInclude Include="Models.h" />
-    <ClInclude Include="ForceGenerator.h" />
-    <ClInclude Include="ParticleForceRegistry.h" />
-    <ClInclude Include="GravityForceGenerator.h" />
-    <ClInclude Include="Plane.h" />
-    <ClInclude Include="ParticleDragGenerator.h" />
-    <ClInclude Include="Whirlwind.h" />
-    <ClInclude Include="ExplosionForceGenerator.h" />
-    <ClInclude Include="SpringForceGenerator.h" />
-    <ClInclude Include="AnchoredSpringFG.h" />
-    <ClInclude Include="BouyancyForceGenerator.h" />
-    <ClInclude Include="RigidSolid.h" />
+    <ClInclude Include="AnchoredSpringFG.h">
+      <Filter>ForceGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="BouyancyForceGenerator.h">
+      <Filter>ForceGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionForceGenerator.h">
+      <Filter>ForceGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="ForceGenerator.h">
+      <Filter>ForceGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="GravityForceGenerator.h">
+      <Filter>ForceGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="SpringForceGenerator.h">
+      <Filter>ForceGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="callbacks.hpp">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="core.hpp">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderUtils.hpp">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidSolid.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Whirlwind.h">
+      <Filter>ForceGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleDragGenerator.h">
+      <Filter>ForceGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleForceRegistry.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleGenerator.h">
+      <Filter>ParticleGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Models.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="DroppingObjectsManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
       <UniqueIdentifier>{d04b4f9f-5a69-465e-8070-25c6d0bcd3c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ForceGenerators">
+      <UniqueIdentifier>{06c0f3e8-25d3-458c-9cd3-8ef2276f5b0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{82330030-8e47-4309-8b2c-ac5aaa3747b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{25c6071d-be1c-47a9-ad19-77da34112210}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{9361794f-6847-489a-bd7b-0c59f1fb4196}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ParticleGenerators">
+      <UniqueIdentifier>{36579c73-67a0-4f39-861a-eef3c1edd2eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

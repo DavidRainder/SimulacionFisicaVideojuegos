@@ -254,6 +254,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="callbacks.cpp" />
+    <ClCompile Include="DroppingObjectsManager.cpp" />
     <ClCompile Include="GravityForceGenerator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -262,6 +263,7 @@
     <ClCompile Include="RenderUtils.cpp" />
     <ClCompile Include="Render\Camera.cpp" />
     <ClCompile Include="Render\Render.cpp" />
+    <ClCompile Include="GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnchoredSpringFG.h" />
@@ -269,6 +271,7 @@
     <ClInclude Include="BouyancyForceGenerator.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
+    <ClInclude Include="DroppingObjectsManager.h" />
     <ClInclude Include="ExplosionForceGenerator.h" />
     <ClInclude Include="Models.h" />
     <ClInclude Include="ForceGenerator.h" />
@@ -285,6 +288,7 @@
     <ClInclude Include="Render\Render.h" />
     <ClInclude Include="RigidSolid.h" />
     <ClInclude Include="SpringForceGenerator.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Whirlwind.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

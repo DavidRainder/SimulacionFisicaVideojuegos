@@ -5,6 +5,7 @@
 #include <random>
 #include <chrono>
 #include "Models.h"
+#include "RigidSolid.h"
 
 template<class T, class Model_Config>
 class ParticleGenerator
