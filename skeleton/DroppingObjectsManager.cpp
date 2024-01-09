@@ -33,6 +33,15 @@ void DroppingObjectsManager::StartGame() {
 	restartTimer();
 }
 
+int DroppingObjectsManager::numObjectsStillStanding() {
+	int num = 0;
+	for (auto it : static_pieces) {
+		if(_bb.insideBoundingBox((*it).solid->getPos()))
+			num++;
+	}
+	return num;
+}
+
 void DroppingObjectsManager::handleRotation(int dir) {
 	if (currentObject == nullptr) return;
 	if (dir > 0) dir = 1;
@@ -177,14 +186,16 @@ void DroppingObjectsManager::switchToDynamicPieces() {
 	}
 
 	canBuild = false;
+	timeToBuildEnded = true;
+	restartTimer();
 }
 
 void DroppingObjectsManager::switchToStaticPieces() {
 	int i = 0;
-	for (auto it = dynamic_pieces.begin(); it != dynamic_pieces.end();) {
+	for (auto it = dynamic_pieces.begin(); it != dynamic_pieces.end() && i < static_pieces.size();) {
 
 		static_piece_info* _info = static_pieces[i];
-		RigidSolid* newSolid = new RigidSolid(gScene, gPhysics, *Models::dynamic_dropped_solids[_info->modelNum]);
+		RigidSolid* newSolid = new RigidSolid(gScene, gPhysics, *Models::static_dropping_solids[_info->modelNum]);
 		newSolid->setPos((*it)->getPos());
 		newSolid->setRotation((*it)->getGlobalPose().q);
 		_info->solid = newSolid;

@@ -180,8 +180,8 @@ Camera* GetCamera()
 	return sCamera;
 }
 
-void SetCamera(Vector3 pos, Vector3 lookingDir) {
-	pos.y = sCamera->getTransform().p.y;
+void SetCamera(Vector3 pos, Vector3 lookingDir, bool changeY) {
+	if(!changeY) pos.y = sCamera->getTransform().p.y;
 	delete sCamera;
 	sCamera = new Camera(pos, lookingDir);
 }

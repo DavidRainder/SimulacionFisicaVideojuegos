@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include <iostream>
 
 GameManager::GameManager(physx::PxScene* scene, physx::PxPhysics* physics, int numPlayers) 
 	: numPlayers(numPlayers), scene(scene), physics(physics) {
@@ -10,8 +11,8 @@ GameManager::GameManager(physx::PxScene* scene, physx::PxPhysics* physics, int n
 		if (i % 2 == 0) z = -z;
 		Vector3 playerPos = Vector3(x, 3, z);
 		player->dropMngr = new DroppingObjectsManager(scene, physics, playerPos, 5, 15);
-		player->cannon = new FiringCannon(scene, physics, Models::Solid_Projectiles[0], Vector3(playerPos.x, 0, 0)
-			, Vector3(0, 0, playerPos.z).getNormalized(), 8000);
+		player->cannon = new FiringCannon(scene, physics, Models::Solid_Projectiles[0], Vector3(playerPos.x, 3.f, 0)
+			, Vector3(0, 0, playerPos.z).getNormalized(), 3000);
 		
 		_players.push_back(player);
 	}
@@ -41,8 +42,14 @@ void GameManager::NextPlayer() {
 		break;
 	}
 }
+
 void GameManager::StartFinalPhase() {
 	state = End;
+	for (auto it : _players) {
+		(it)->points = (*it).dropMngr->numObjectsStillStanding();
+	}
+
+	SetCamera(Vector3(0, 70, 0), Vector3(0.1, -1, 0.1), true); 
 }
 void GameManager::update(double t) {
 	switch (state) {

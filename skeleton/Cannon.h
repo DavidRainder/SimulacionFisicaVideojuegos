@@ -27,7 +27,7 @@ public:
 
 	inline void SetupCannon() {
 		// dir is just for adjusting the camera
-		SetCamera(position, direction);
+		SetCamera(position, direction, true);
 	}
 
 	void keyPressed(unsigned char key, const physx::PxTransform& camera);

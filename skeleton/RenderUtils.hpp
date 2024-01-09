@@ -62,7 +62,7 @@ public:
 
 double GetLastTime();
 Camera* GetCamera();
-void SetCamera(Vector3 pos, Vector3 dir);
+void SetCamera(Vector3 pos, Vector3 dir, bool changeY = false);
 
 physx::PxShape* CreateShape(const physx::PxGeometry& geo, const physx::PxMaterial* mat = nullptr);
 

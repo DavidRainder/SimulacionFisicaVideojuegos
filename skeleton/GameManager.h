@@ -13,6 +13,8 @@ private:
 		DroppingObjectsManager* dropMngr = nullptr;
 		FiringCannon* cannon = nullptr;
 
+		int points = 0;
+
 		void updateDrop(double t) {
 			dropMngr->update(t);
 		}

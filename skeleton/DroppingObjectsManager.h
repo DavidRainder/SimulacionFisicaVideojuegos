@@ -15,24 +15,24 @@ private:
 
 	#pragma region _CAM
 	Vector3 cameraPositions[4]{
-	Vector3(10.f, 6.f, -5.) * 2,
-	Vector3(-10.f, 6.f, -5.) * 2,
-	Vector3(-10.f, 6.f, 5.) * 2,
-	Vector3(10.f, 6.f, 5.) * 2
+	Vector3(-5.f, 6.f, 10.f) * 2,
+	Vector3(-5., 6.f, -10.f) * 2,
+	Vector3(5., 6.f, -10.f) * 2,
+	Vector3(5., 6.f, 10.f) * 2
 	};
 
 	Vector3 cameraDirections[4]{
-		Vector3(-1, -0.5f, 0.5f),
-		Vector3(1, -0.5f, 0.5f),
-		Vector3(1, -0.5f, -0.5f),
-		Vector3(-1, -0.5f, -0.5f)
+		Vector3(.5f, -0.5f, -1),
+		Vector3(.5f, -0.5f, 1),
+		Vector3(-0.5f, -0.5f, 1),
+		Vector3(-0.5f, -0.5f, -1)
 	};
 
 	Vector3 moveDirections[4]{
+		Vector3(0,0,-1),
+		Vector3(0,0,1),
 		Vector3(-1,0,0),
 		Vector3(1,0,0),
-		Vector3(0,0,1),
-		Vector3(0,0,-1)
 	};
 
 	int currentCameraPosition = 0;
@@ -90,6 +90,8 @@ public:
 	// switch pieces
 	void switchToDynamicPieces();
 	void switchToStaticPieces();
+
+	int numObjectsStillStanding();
 
 private:
 	// piece generation
