@@ -41,19 +41,25 @@ namespace Models {
 	};
 
 	static std::vector<RigidSolid_config*> static_dropping_solids{
-		new RigidSolid_config(1.0f, STATIC, LONG_PIECE, 3.f, 1.0f, Vector4(0, 0, 0.3, 1.f)),
-		new RigidSolid_config(1.0f, STATIC, LONG_PIECE, 3.f, 1.0f, Vector4(0, 0.3, 0, 1.f)),
+		new RigidSolid_config(1.0f, STATIC, SMALL_PIECE, -1, 1.0f, Vector4(0, 0, 0.3, 1.f)),
+		new RigidSolid_config(1.0f, STATIC, MID_PIECE, -1, 1.0f, Vector4(0.3, 0, 0, 1.f)),
+		new RigidSolid_config(1.0f, STATIC, LONG_PIECE, -1, 1.0f, Vector4(0, 0.3, 0, 1.f)),
 	};
 
 	static std::vector<RigidSolid_config*> dynamic_dropped_solids{
-		new RigidSolid_config(1.f, DYNAMIC, LONG_PIECE, 3.f, 1.0f, Vector4(0, 0, 0.3, 1.f)),
-		new RigidSolid_config(1.f, DYNAMIC, LONG_PIECE, 3.f, 1.0f, Vector4(0, 0.3, 0, 1.f)),
+		new RigidSolid_config(1.f, DYNAMIC, SMALL_PIECE, -1, 1.0f, Vector4(0, 0, 0.3, 1.f)),
+		new RigidSolid_config(1.f, DYNAMIC, MID_PIECE, -1, 1.0f, Vector4(0.3, 0, 0, 1.f)),
+		new RigidSolid_config(1.f, DYNAMIC, LONG_PIECE, -1, 1.0f, Vector4(0, 0.3, 0, 1.f)),
 	};
 
 	static std::vector<RigidSolid_config*> Solid{
-		new RigidSolid_config(1.0f, DYNAMIC, BOX, 3.f, 1.0f, Vector4(0.3, 0, 0, 0.2f)),
-		new RigidSolid_config(1.0f, STATIC, BOX),
-		new RigidSolid_config(1.0f, DYNAMIC, SPHERE),
-		new RigidSolid_config(1.0f, STATIC, SPHERE),
+		new RigidSolid_config(1.0f, DYNAMIC, BOX, -1, 1.0f, Vector4(0.3, 0, 0, 0.2f)),
+		new RigidSolid_config(1.0f, STATIC, BOX, -1),
+		new RigidSolid_config(1.0f, DYNAMIC, SPHERE, -1),
+		new RigidSolid_config(1.0f, STATIC, SPHERE, -1),
+	};
+
+	static std::vector<RigidSolid_config*> Solid_Projectiles{
+		new RigidSolid_config(1.0f, DYNAMIC, SPHERE, 3.f, 0.8f, Vector4(0.2, 0.2, 0.2, 0.2f)),
 	};
 }

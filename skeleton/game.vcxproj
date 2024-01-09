@@ -254,7 +254,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="callbacks.cpp" />
+    <ClCompile Include="Cannon.cpp" />
     <ClCompile Include="DroppingObjectsManager.cpp" />
+    <ClCompile Include="Firework.cpp" />
+    <ClCompile Include="FireworkGenerator.cpp" />
+    <ClCompile Include="GaussianParticleGenerator.cpp" />
     <ClCompile Include="GravityForceGenerator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -270,9 +274,13 @@
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="BouyancyForceGenerator.h" />
     <ClInclude Include="callbacks.hpp" />
+    <ClInclude Include="Cannon.h" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="DroppingObjectsManager.h" />
     <ClInclude Include="ExplosionForceGenerator.h" />
+    <ClInclude Include="FireworkExplosionGenerator.h" />
+    <ClInclude Include="Firework.h" />
+    <ClInclude Include="GaussianParticleGenerator.h" />
     <ClInclude Include="Models.h" />
     <ClInclude Include="ForceGenerator.h" />
     <ClInclude Include="GravityForceGenerator.h" />
@@ -289,6 +297,7 @@
     <ClInclude Include="RigidSolid.h" />
     <ClInclude Include="SpringForceGenerator.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="UniformParticleGenerator.h" />
     <ClInclude Include="Whirlwind.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

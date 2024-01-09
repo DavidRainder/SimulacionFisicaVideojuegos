@@ -9,9 +9,8 @@
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
 
-#include "Projectile.h"
 #include "ParticleSystem.h"
-#include "DroppingObjectsManager.h"
+#include "GameManager.h"
 #include "Plane.h"
 
 #include "ForceGenerator.h"
@@ -56,14 +55,21 @@ bool											paused = false;
 RigidSolid* ground;
 RigidSolid* walls[4];
 
-DroppingObjectsManager* dropMngr = nullptr;
+GameManager* gameManager = nullptr;
 
 void initManagers() {
+	gameManager = new GameManager(gScene, gPhysics, 2);
 
+}
+
+void initObjects() {
+	ground = new RigidSolid(gScene, gPhysics, *Models::Solid_Ground[0]);
 }
 
 void initGame() {
 
+	initManagers();
+	initObjects();
 }
 
 // Initialize physics engine
@@ -90,9 +96,9 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	dropMngr = new DroppingObjectsManager(gScene, gPhysics, Vector3(25, 3.f, 25));
 
-	ground = new RigidSolid(gScene, gPhysics, *Models::Solid_Ground[0]);
+	initGame();
+
 }
 
 // Function to configure what happens in each step of physics
@@ -102,7 +108,7 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 	if (!paused) {
-		dropMngr->update(t);
+		gameManager->update(t);
 	}
 
 	gScene->simulate(t);
@@ -141,7 +147,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			break;
 	}
 
-	dropMngr->keyPressed(key, camera);
+	gameManager->keyPressed(key, camera);
 }
 
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)

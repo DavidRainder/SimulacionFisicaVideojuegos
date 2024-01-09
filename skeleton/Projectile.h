@@ -1,12 +1,14 @@
 #pragma once
-#include "Particle.h"
+#include "core.hpp"
+#include "RigidSolid.h"
 
 #pragma once
-class Projectile : public Particle
+class Projectile : public RigidSolid
 {
 public:
 	enum class Type { Canonball, Bullet };
-	Projectile(Vector3 pos, Vector3 dir, float scale, Type pType, float speed = 1.0f, float maxTimeAlive = 3.0f);
+	Projectile(physx::PxScene* scene, physx::PxPhysics* physics, 
+		Vector3 pos, Vector3 force, RigidSolid_config& model);
 	virtual void integrate(double t);
 protected:
 	

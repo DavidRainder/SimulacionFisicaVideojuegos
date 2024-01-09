@@ -6,7 +6,6 @@
 
 class DroppingObjectsManager {
 private:
-
 	struct static_piece_info {
 		int modelNum;
 		physx::PxQuat q;
@@ -51,13 +50,18 @@ private:
 
 	float _lastWidth = 0;
 	int modelNum = 0;
+
 	float timer = 0;
-	const float _time_between_pieces = 0.75f;
+	float timeToBuild = 0;
+	float postBuildTime = 6.5f;
+	bool timerActivated = false;
+	bool timeToBuildEnded = false;
+
 	float _objectUpSpeed = 0.0001f;
 
-	bool timerActivated = false;
 	bool canMove = true;
 
+	std::vector<int> avaliablePieces;
 	std::vector<static_piece_info*> static_pieces;
 	std::vector<RigidSolid*> dynamic_pieces;
 
@@ -66,14 +70,22 @@ private:
 
 	bool canBuild = true;
 
+	bool buildPhaseEnded = false;
+
 public:
-	DroppingObjectsManager(physx::PxScene* scene, physx::PxPhysics* physics, Vector3 pos);
+	DroppingObjectsManager(physx::PxScene* scene, physx::PxPhysics* physics, Vector3 pos, float time, int seed = 1);
 
 	// input handling
 	void keyPressed(unsigned char key, physx::PxTransform Camera);
 
 	// frame by frame behaviour
 	void update(double t);
+
+	void StartGame();
+
+	void turnTimeHandler(double t);
+
+	inline bool hasEndedBuildPhase() { return buildPhaseEnded; };
 
 private:
 	// piece generation

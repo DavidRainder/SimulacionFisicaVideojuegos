@@ -31,7 +31,21 @@
     <ClCompile Include="DroppingObjectsManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Cannon.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="FireworkGenerator.cpp">
+      <Filter>ParticleGenerators</Filter>
+    </ClCompile>
+    <ClCompile Include="Firework.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="GaussianParticleGenerator.cpp">
+      <Filter>ParticleGenerators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render\Camera.h">
@@ -103,7 +117,24 @@
     <ClInclude Include="DroppingObjectsManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Cannon.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="FireworkExplosionGenerator.h">
+      <Filter>ParticleGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="Firework.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="GaussianParticleGenerator.h">
+      <Filter>ParticleGenerators</Filter>
+    </ClInclude>
+    <ClInclude Include="UniformParticleGenerator.h">
+      <Filter>ParticleGenerators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

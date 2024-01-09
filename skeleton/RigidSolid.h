@@ -1,6 +1,6 @@
+#pragma once
 #include "RenderUtils.hpp"
 #include "ParticleGenerator.h"
-#pragma once
 
 struct RigidSolid_config {
 public:
@@ -185,11 +185,19 @@ private:
 			mMaterial = physics->createMaterial(1, 1, -1);
 			shape = CreateShape(box, mMaterial);
 		}
-		else if (_shape == BOX_PIECE) {
+		else if (_shape == SMALL_PIECE) {
 			width = height = length = scale;
 			physx::PxBoxGeometry box(width, height, length);
 			physx::PxMaterial* mMaterial;
-			mMaterial = physics->createMaterial(1, 1, -1);
+			mMaterial = physics->createMaterial(10000, 10000, -1);
+			shape = CreateShape(box, mMaterial);
+		}
+		else if (_shape == MID_PIECE) {
+			width = height = scale; 
+			length = scale*2;
+			physx::PxBoxGeometry box(width, height, length);
+			physx::PxMaterial* mMaterial;
+			mMaterial = physics->createMaterial(10000, 10000, -1);
 			shape = CreateShape(box, mMaterial);
 		}
 		else if (_shape == LONG_PIECE) {

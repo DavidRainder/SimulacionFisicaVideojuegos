@@ -1,16 +1,36 @@
 #pragma once
 #include "DroppingObjectsManager.h"
+#include <iostream>
 
-DroppingObjectsManager::DroppingObjectsManager(physx::PxScene* scene, physx::PxPhysics* physics, Vector3 pos) :
-	position(pos), objectPosition(pos), moveDir(Vector3(0, 0, 0)), gScene(scene), gPhysics(physics),
-	_bb(Point(-5,0,-5), Point(5,10000000,5)) {
+DroppingObjectsManager::DroppingObjectsManager(physx::PxScene* scene, physx::PxPhysics* physics, Vector3 pos, float time, int seed) :
+	position(pos), objectPosition(pos), moveDir(Vector3(0, 0, 0)), gScene(scene), gPhysics(physics), timeToBuild(time),
+	_bb(Point(-5 + pos.x,1.5f,-5 + pos.z), Point(5 + pos.x,10000000,5 + pos.z)) {
+
+	avaliablePieces = std::vector<int>(maxPieces);
+	srand(seed);
+
 	for (int i = 0; i < 4; ++i) {
 		cameraPositions[i] += pos;
 	}
 
+	// initialize with a given seed
+	for (int i = 0; i < maxPieces; ++i) {
+		avaliablePieces[i] = rand() % Models::static_dropping_solids.size();
+	}
+
 	platform = new RigidSolid(gScene, gPhysics, *Models::Platform[1]);
-	platform->setPos(Vector3(0, platform->getHeight()/2, 0));
-	generateRandomObject(pos);
+	platform->setPos(Vector3(pos.x, platform->getHeight()/2, pos.z));
+	
+	canBuild = false;
+	stopTimer();
+}
+
+void DroppingObjectsManager::StartGame() {
+	canBuild = true;
+	SetCamera(cameraPositions[0], cameraDirections[0]);
+	currentCameraPosition = 0;
+	generateRandomObject(position);
+	restartTimer();
 }
 
 void DroppingObjectsManager::handleRotation(int dir) {
@@ -48,7 +68,6 @@ void DroppingObjectsManager::keyPressed(unsigned char key, physx::PxTransform Ca
 		break;
 	case ' ':
 		drop();
-		restartTimer();
 		break;
 	case '1':
 		currentCameraPosition = 0;
@@ -90,12 +109,19 @@ void DroppingObjectsManager::undoDrop() {
 
 void DroppingObjectsManager::generateRandomObject(Vector3 pos) {
 	if (currentObject != nullptr) return;
-	modelNum = rand() % Models::static_dropping_solids.size();
+	
+	auto it = avaliablePieces.begin() + (rand() % avaliablePieces.size());
+	modelNum = *it;
+	
 	currentObject = new RigidSolid(gScene, gPhysics, *Models::static_dropping_solids[modelNum]);
+	avaliablePieces.erase(it);
+
 	_lastWidth = currentObject->getWidth() * 1.02f;
 	objectPosition = pos;
+	
 	cameraUpMovement = currentObject->getHeight() * 1.02f;
 	currentObject->setPos(objectPosition);
+	
 	if (droppedObject != nullptr) {
 		auto tr = currentObject->getGlobalPose();
 		tr.q = rotation_droppedObject;
@@ -125,8 +151,9 @@ void DroppingObjectsManager::drop() {
 
 	canBuild = currentPieces < maxPieces;
 
-	if (!canBuild)
+	if (!canBuild || timeToBuildEnded) {
 		switchToDynamicPieces();
+	}
 	else generateRandomObject(position);
 	// position.y += cameraUpMovement;
 
@@ -150,6 +177,8 @@ void DroppingObjectsManager::switchToDynamicPieces() {
 		
 		it = static_pieces.erase(it);
 	}
+
+	canBuild = false;
 }
 
 void DroppingObjectsManager::restartTimer() {
@@ -161,10 +190,27 @@ void DroppingObjectsManager::stopTimer() {
 	timerActivated = false;
 }
 
+void DroppingObjectsManager::turnTimeHandler(double t) {
+	if (!timerActivated) return;
+	timer += t;
+	std::cout << timer << '\n';
+	if (!timeToBuildEnded && timer >= timeToBuild) {
+		timeToBuildEnded = true;
+		switchToDynamicPieces();
+		restartTimer();
+	}
+	else if (timeToBuildEnded && timer >= postBuildTime) {
+		buildPhaseEnded = true;
+		stopTimer();
+	}
+}
+
 void DroppingObjectsManager::update(double t) {
 	moveHandler();
 
 	if (currentObject != nullptr) currentObject->setPos(objectPosition);
+
+	turnTimeHandler(t);
 }
 
 void DroppingObjectsManager::moveHandler() {
