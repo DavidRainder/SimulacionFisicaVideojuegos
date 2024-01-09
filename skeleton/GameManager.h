@@ -5,7 +5,7 @@
 class GameManager
 {
 private:
-	enum State { Menu, Build, Cannon };
+	enum State { Menu, Build, Cannon, End };
 
 	State state = Menu;
 
@@ -13,16 +13,20 @@ private:
 		DroppingObjectsManager* dropMngr = nullptr;
 		FiringCannon* cannon = nullptr;
 
-		void update(double t) {
+		void updateDrop(double t) {
 			dropMngr->update(t);
 		}
 
-		void keyPressed(unsigned char key, const physx::PxTransform& camera) {
-			dropMngr->keyPressed(key, camera);
+		void updateCannon(double t) {
+			cannon->update(t);
 		}
 
-		void StartGame() {
-			dropMngr->StartGame();
+		inline bool hasEndedBuildPhase() {
+			return dropMngr->hasEndedBuildPhase();
+		}
+
+		inline bool hasEndedCannonPhase() {
+			return cannon->hasEndedCannonPhase();
 		}
 	};
 
@@ -44,6 +48,7 @@ public:
 	void keyPressed(unsigned char key, const physx::PxTransform& camera);
 
 private:
+	void StartFinalPhase();
 	void StartCannonPhase();
 	void NextPlayer();
 };

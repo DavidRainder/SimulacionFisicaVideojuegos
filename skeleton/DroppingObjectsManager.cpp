@@ -164,7 +164,7 @@ void DroppingObjectsManager::drop() {
 void DroppingObjectsManager::switchToDynamicPieces() {
 	delete currentObject;
 	currentObject = nullptr;
-	for (auto it = static_pieces.begin(); it != static_pieces.end();) {
+	for (auto it = static_pieces.begin(); it != static_pieces.end(); ++it) {
 
 		static_piece_info* _info = *it;
 		RigidSolid* newSolid = new RigidSolid(gScene, gPhysics, *Models::dynamic_dropped_solids[_info->modelNum]);
@@ -174,11 +174,27 @@ void DroppingObjectsManager::switchToDynamicPieces() {
 
 		delete _info->solid;
 		_info->solid = nullptr;
-		
-		it = static_pieces.erase(it);
 	}
 
 	canBuild = false;
+}
+
+void DroppingObjectsManager::switchToStaticPieces() {
+	int i = 0;
+	for (auto it = dynamic_pieces.begin(); it != dynamic_pieces.end();) {
+
+		static_piece_info* _info = static_pieces[i];
+		RigidSolid* newSolid = new RigidSolid(gScene, gPhysics, *Models::dynamic_dropped_solids[_info->modelNum]);
+		newSolid->setPos((*it)->getPos());
+		newSolid->setRotation((*it)->getGlobalPose().q);
+		_info->solid = newSolid;
+
+		delete (*it);
+		(*it) = nullptr;
+		it = dynamic_pieces.erase(it);
+
+		++i;
+	}
 }
 
 void DroppingObjectsManager::restartTimer() {

@@ -53,7 +53,7 @@ private:
 
 	float timer = 0;
 	float timeToBuild = 0;
-	float postBuildTime = 6.5f;
+	float postBuildTime = 1.5f;
 	bool timerActivated = false;
 	bool timeToBuildEnded = false;
 
@@ -87,6 +87,10 @@ public:
 
 	inline bool hasEndedBuildPhase() { return buildPhaseEnded; };
 
+	// switch pieces
+	void switchToDynamicPieces();
+	void switchToStaticPieces();
+
 private:
 	// piece generation
 	void generateRandomObject(Vector3 pos);
@@ -104,7 +108,4 @@ private:
 	// timers
 	void restartTimer();
 	void stopTimer();
-
-	// switch pieces
-	void switchToDynamicPieces();
 };

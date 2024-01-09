@@ -10,6 +10,9 @@ GameManager::GameManager(physx::PxScene* scene, physx::PxPhysics* physics, int n
 		if (i % 2 == 0) z = -z;
 		Vector3 playerPos = Vector3(x, 3, z);
 		player->dropMngr = new DroppingObjectsManager(scene, physics, playerPos, 5, 15);
+		player->cannon = new FiringCannon(scene, physics, Models::Solid_Projectiles[0], Vector3(playerPos.x, 0, 0)
+			, Vector3(0, 0, playerPos.z).getNormalized(), 8000);
+		
 		_players.push_back(player);
 	}
 	
@@ -23,14 +26,24 @@ void GameManager::StartGame() {
 
 void GameManager::StartCannonPhase() {
 	state = Cannon;
-	currentPlayer = 0;
+	currentPlayer = -1;
+	NextPlayer();
 }
 
 void GameManager::NextPlayer() {
 	currentPlayer++;
-	_players[currentPlayer]->StartGame();
+	switch (state) {
+	case Build:
+		_players[currentPlayer]->dropMngr->StartGame();
+		break;
+	case Cannon:
+		_players[currentPlayer]->cannon->SetupCannon();
+		break;
+	}
 }
-
+void GameManager::StartFinalPhase() {
+	state = End;
+}
 void GameManager::update(double t) {
 	switch (state) {
 	case Menu:
@@ -38,8 +51,8 @@ void GameManager::update(double t) {
 		break;
 
 	case Build:
-		if (!_players[currentPlayer]->dropMngr->hasEndedBuildPhase())
-			_players[currentPlayer]->update(t);
+		if (!_players[currentPlayer]->hasEndedBuildPhase())
+			_players[currentPlayer]->updateDrop(t);
 		else if (currentPlayer != numPlayers - 1) {
 			NextPlayer();
 		}
@@ -48,6 +61,19 @@ void GameManager::update(double t) {
 		}
 		break;
 	case Cannon:
+		if (!_players[currentPlayer]->hasEndedCannonPhase())
+			_players[currentPlayer]->updateCannon(t);
+		else {
+			_players[currentPlayer]->dropMngr->switchToStaticPieces();
+			if (currentPlayer != numPlayers - 1) {
+				NextPlayer();
+			}
+			else {
+				StartFinalPhase();
+			}
+		}
+		break;
+	case End:
 
 		break;
 	}
@@ -60,10 +86,10 @@ void GameManager::keyPressed(unsigned char key, const physx::PxTransform& camera
 		break;
 
 	case Build:
-		_players[currentPlayer]->keyPressed(key, camera);
+		_players[currentPlayer]->dropMngr->keyPressed(key, camera);
 		break;
 	case Cannon:
-		_players[currentPlayer]->keyPressed(key, camera);
+		_players[currentPlayer]->cannon->keyPressed(key, camera);
 		break;
 	}
 
