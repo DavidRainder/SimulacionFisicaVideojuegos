@@ -21,6 +21,7 @@
 #include "ExplosionForceGenerator.h"
 #include "BouyancyForceGenerator.h"
 #include "Whirlwind.h"
+#include "GravityForceGenerator.h"
 
 #include "RigidSolid.h"
 
@@ -52,22 +53,54 @@ ParticleForceRegistry<Particle>*				_pFR;
 
 bool											paused = false;
 
-RigidSolid* ground;
-RigidSolid* walls[4];
+RigidSolid* walls[4] {nullptr, nullptr, nullptr, nullptr};
+RigidSolid* ground = nullptr;
+RigidSolid* ceiling = nullptr;
+
+ParticleForceRegistry<RigidSolid>* solid_rgst = nullptr;
+ParticleForceRegistry<Particle>* particle_rgst = nullptr;
+
+ParticleSystem<Particle, Particle_config>* particleSys = nullptr;
+ParticleSystem<RigidSolid, RigidSolid_config>* solidSys = nullptr;
 
 GameManager* gameManager = nullptr;
 
 void initManagers() {
-	gameManager = new GameManager(gScene, gPhysics, 2);
+	solid_rgst = new ParticleForceRegistry<RigidSolid>();
+	particle_rgst = new ParticleForceRegistry<Particle>();
+	particleSys = new ParticleSystem<Particle, Particle_config>(gScene, particle_rgst);
+	solidSys = new ParticleSystem<RigidSolid, RigidSolid_config>(gScene, solid_rgst);
+	BouyancyForceGenerator<RigidSolid>* water_gen = new BouyancyForceGenerator<RigidSolid>(1.5f, 1.0f);
+	solidSys->addForceGenerator(water_gen);
+	GravityForceGenerator* gravityForce = new GravityForceGenerator(Vector3(0, -9.8f, 0));
+	particleSys->addForceGenerator(gravityForce);
+	gameManager = new GameManager(gScene, gPhysics, particleSys, solidSys, 2);
 
 }
 
 void initObjects() {
 	ground = new RigidSolid(gScene, gPhysics, *Models::Solid_Ground[0]);
+	walls[0] = new RigidSolid(gScene, gPhysics, *Models::Solid_Ground[1]);
+	walls[0]->setPos(Vector3(30, 10, 0));
+	walls[0]->rotate(90, Vector3(0, 0, 1));
+	
+	walls[1] = new RigidSolid(gScene, gPhysics, *Models::Solid_Ground[1]);
+	walls[1]->setPos(Vector3(-30, 10, 0));
+	walls[1]->rotate(90, Vector3(0, 0, 1));
+	
+	walls[2] = new RigidSolid(gScene, gPhysics, *Models::Solid_Ground[2]);
+	walls[2]->setPos(Vector3(0, 10, -50));
+	walls[2]->rotate(90, Vector3(1, 0, 0));
+	
+	walls[3] = new RigidSolid(gScene, gPhysics, *Models::Solid_Ground[2]);
+	walls[3]->setPos(Vector3(0, 10, 50));
+	walls[3]->rotate(90, Vector3(1, 0, 0));
+
+	ceiling = new RigidSolid(gScene, gPhysics, *Models::Solid_Ground[3]);
+	ceiling->setPos(Vector3(0, 50, 0));
 }
 
 void initGame() {
-
 	initManagers();
 	initObjects();
 }
@@ -101,6 +134,34 @@ void initPhysics(bool interactive)
 
 }
 
+void destroyAll() {
+	delete gameManager;
+	gameManager = nullptr;
+	delete ground;
+	ground = nullptr;
+	delete walls[0];
+	walls[0] = nullptr;
+	delete walls[1];
+	walls[1] = nullptr;
+	delete walls[2];
+	walls[2] = nullptr;
+	delete walls[3];
+	walls[3] = nullptr;
+	delete particleSys;
+	particleSys = nullptr;
+	delete solidSys;
+	solidSys = nullptr;
+	delete solid_rgst;
+	solid_rgst = nullptr;
+	delete particle_rgst;
+	particle_rgst = nullptr;
+}
+
+void restartGame() {
+	destroyAll();
+	initGame();
+}
+
 // Function to configure what happens in each step of physics
 // interactive: true if the game is rendering, false if it offline
 // t: time passed since last call in milliseconds
@@ -108,7 +169,14 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 	if (!paused) {
+		particleSys->update(t);
+		particle_rgst->updateForces(t);
+		solid_rgst->updateForces(t);
 		gameManager->update(t);
+	}
+
+	if (gameManager->getDestroy()) {
+		restartGame();
 	}
 
 	gScene->simulate(t);
@@ -121,6 +189,7 @@ void cleanupPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
 
+	destroyAll();
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
 	gDispatcher->release();
@@ -152,6 +221,8 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 {
+	gameManager->onCollision(actor1, actor2);
+
 	PX_UNUSED(actor1);
 	PX_UNUSED(actor2);
 }

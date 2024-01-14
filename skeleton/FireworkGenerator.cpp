@@ -3,8 +3,8 @@
 #include "Firework.h"
 #include "Models.h"
 
-FireworkGenerator::FireworkGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos, Vector3 variation) :
-GaussianParticleGenerator(name, avgSpeed, avgPos, variation) {
+FireworkGenerator::FireworkGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos, Vector3 variation, int generation) :
+GaussianParticleGenerator(name, avgSpeed, avgPos, variation), generation(generation) {
 	models = Models::Fireworks;
 }
 
@@ -15,7 +15,7 @@ std::list<Particle*> FireworkGenerator::generateParticles(double t) {
 		auto model = models[rand() % models.size()];
 		model->vel = Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen));
 		model->pos = _avgPos;
-		Particle* newParticle = new Firework(3, *model);
+		Particle* newParticle = new Firework(generation, *model);
 		_list.push_back(newParticle);
 		currentTime = 0;
 	}
@@ -24,12 +24,13 @@ std::list<Particle*> FireworkGenerator::generateParticles(double t) {
 
 FireworkExplosionGenerator::FireworkExplosionGenerator(int generation, std::string name, Vector3 avgSpeed, Vector3 avgPos, int numParticles)
 	: ParticleGenerator<Particle, Particle_config>(name, avgSpeed, avgPos), numParticles(numParticles), generation(generation) {
-	models = Models::Fireworks;
+	// models = Models::Fireworks;
 }
 std::list<Particle*> FireworkExplosionGenerator::generateParticles(double t)
 {
 	std::list<Particle*> _list;
-	auto model = models[rand() % models.size()];
+	int num = rand() % models.size();
+	auto model = models[num];
 	for (int i = 0; i < numParticles; ++i) {
 		model->pos = _avgPos;
 		model->vel = (Vector3((float)(rand() % 100 - 50),

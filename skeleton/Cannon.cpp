@@ -12,6 +12,17 @@ void FiringCannon::keyPressed(unsigned char key, const physx::PxTransform& camer
 	}
 }
 
+FiringCannon::~FiringCannon() {
+	for (auto it = firedProjectiles.begin(); it != firedProjectiles.end();) {
+		if (*it != nullptr)
+		{
+			delete (*it);
+			(*it) = nullptr;
+		}
+		it = firedProjectiles.erase(it);
+	}
+}
+
 void FiringCannon::update(double t) {
 	for (auto it = firedProjectiles.begin(); it != firedProjectiles.end();) {
 		if (!(*it)->getDestroy()) {

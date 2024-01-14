@@ -12,9 +12,10 @@ protected:
 
 class FireworkGenerator : public GaussianParticleGenerator<Particle, Particle_config> {
 public:
-	FireworkGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos, Vector3 variation);
+	FireworkGenerator(std::string name, Vector3 avgSpeed, Vector3 avgPos, Vector3 variation, int generation);
 	std::list<Particle*> generateParticles(double t);
 private:
 	const float timeTillNextParticle = 0.5f;
 	float currentTime = 0;
+	int generation = 3;
 };

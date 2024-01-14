@@ -19,12 +19,12 @@ private:
 	bool ended = false;
 
 	bool timerActivated = false;
-	float maxTime = 5;
+	float maxTime = 3.5f;
 	float timer = 0;
 
 public:
 	FiringCannon(physx::PxScene* scene, physx::PxPhysics* physics, RigidSolid_config* Model, Vector3 pos, Vector3 dir, float force);
-
+	~FiringCannon();
 	inline void SetupCannon() {
 		// dir is just for adjusting the camera
 		SetCamera(position, direction, true);
@@ -37,6 +37,8 @@ public:
 	inline bool hasEndedCannonPhase() {
 		return ended;
 	}
+
+	inline std::vector<RigidSolid*> FiredProjectiles() { return firedProjectiles; }
 
 private:
 	void startCounter();

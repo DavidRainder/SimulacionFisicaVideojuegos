@@ -53,6 +53,7 @@ public:
 	inline float getMass() { return mass; }
 	inline float getVolume() { return volume; }
 	inline float getScale() { return scale; }
+	inline float getHeight() { return scale * 2; }
 
 	inline bool generatesOnDeath() { return generatesParticles; }
 	inline ParticleGenerator<Particle, Particle_config>* getPG() { return generator; }

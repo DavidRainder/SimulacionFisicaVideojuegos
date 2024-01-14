@@ -2,6 +2,7 @@
 #include "ParticleGenerator.h"
 #include "Models.h"
 #include "BoundingBox.h"
+#include "ParticleSystem.h"
 #pragma once
 
 class DroppingObjectsManager {
@@ -14,29 +15,47 @@ private:
 	};
 
 	#pragma region _CAM
-	Vector3 cameraPositions[4]{
-	Vector3(-5.f, 6.f, 10.f) * 2,
-	Vector3(-5., 6.f, -10.f) * 2,
-	Vector3(5., 6.f, -10.f) * 2,
-	Vector3(5., 6.f, 10.f) * 2
+	Vector3 cameraPositions[8]{
+		Vector3(-5.f, 6.f, 10.f) * 2,
+		Vector3(-5., 6.f, -10.f) * 2,
+		Vector3(5., 6.f, -10.f) * 2,
+		Vector3(5., 6.f, 10.f) * 2,
+		Vector3(5., 6.f, -10.f) * 2,
+		Vector3(5., 6.f, 10.f) * 2,
+		Vector3(-5.f, 6.f, 10.f) * 2,
+		Vector3(-5., 6.f, -10.f) * 2,
 	};
 
-	Vector3 cameraDirections[4]{
+	Vector3 cameraDirections[8]{
 		Vector3(.5f, -0.5f, -1),
 		Vector3(.5f, -0.5f, 1),
 		Vector3(-0.5f, -0.5f, 1),
-		Vector3(-0.5f, -0.5f, -1)
+		Vector3(-0.5f, -0.5f, -1),
+		Vector3(-0.5f, -0.5f, 1),
+		Vector3(-0.5f, -0.5f, -1),
+		Vector3(.5f, -0.5f, -1),
+		Vector3(.5f, -0.5f, 1),
 	};
 
-	Vector3 moveDirections[4]{
+	Vector3 moveDirections[8]{
 		Vector3(0,0,-1),
 		Vector3(0,0,1),
 		Vector3(-1,0,0),
 		Vector3(1,0,0),
+		Vector3(0,0,1),
+		Vector3(0,0,-1),
+		Vector3(1,0,0),
+		Vector3(-1,0,0),
 	};
 
 	int currentCameraPosition = 0;
 	#pragma endregion
+	Vector3 rotation_axis[3]{
+		Vector3(0,0,1),
+		Vector3(0,1,0),
+		Vector3(1,0,0)
+	};
+	int currentRotation = 1;
 	RigidSolid* platform;
 	BoundingBox _bb;
 	Vector3 position, objectPosition;
@@ -53,9 +72,11 @@ private:
 
 	float timer = 0;
 	float timeToBuild = 0;
-	float postBuildTime = 1.5f;
+	float postBuildTime = 3.5f;
 	bool timerActivated = false;
 	bool timeToBuildEnded = false;
+
+	int camOffset = 2;
 
 	float _objectUpSpeed = 0.0001f;
 
@@ -63,7 +84,7 @@ private:
 
 	std::vector<int> avaliablePieces;
 	std::vector<static_piece_info*> static_pieces;
-	std::vector<RigidSolid*> dynamic_pieces;
+	std::list<RigidSolid*> dynamic_pieces;
 
 	int currentPieces = 0;
 	int maxPieces = 24;
@@ -72,8 +93,13 @@ private:
 
 	bool buildPhaseEnded = false;
 
+	ParticleSystem<RigidSolid, RigidSolid_config>* particleSys = nullptr;
 public:
-	DroppingObjectsManager(physx::PxScene* scene, physx::PxPhysics* physics, Vector3 pos, float time, int seed = 1);
+	DroppingObjectsManager(physx::PxScene* scene, physx::PxPhysics* physics, ParticleSystem<RigidSolid, RigidSolid_config>* particleSys
+		, Vector3 pos, float time, int seed = 1);
+	~DroppingObjectsManager();
+
+	Vector3 getPos() { return position; }
 
 	// input handling
 	void keyPressed(unsigned char key, physx::PxTransform Camera);
@@ -92,6 +118,21 @@ public:
 	void switchToStaticPieces();
 
 	int numObjectsStillStanding();
+
+	inline float getTimeLeftToBuild() {
+		if(canBuild) return abs(timer - timeToBuild);
+		return 0.0f;
+	}
+
+	inline int MaxPieces() {
+		return maxPieces;
+	}
+
+	inline int NumPieces() {
+		return currentPieces;
+	}
+
+	std::list<RigidSolid*> DynamicPieces() { return dynamic_pieces; };
 
 private:
 	// piece generation

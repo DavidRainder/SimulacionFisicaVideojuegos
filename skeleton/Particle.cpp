@@ -18,7 +18,7 @@ Particle::Particle(Vector3 pos, Vector3 vel, ParticleType type, Vector4 color, b
 		shape = CreateShape(box);
 	}
 	else if (type == Plane) {
-		physx::PxBoxGeometry box(Vector3(500, 5, 500) * scale);
+		physx::PxBoxGeometry box(Vector3(30, 0.3f, 50) * scale);
 		shape = CreateShape(box);
 	}
 	this->mass = mass; // masa

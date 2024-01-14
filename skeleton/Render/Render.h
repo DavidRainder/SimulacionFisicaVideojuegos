@@ -32,6 +32,9 @@
 #ifndef PHYSX_SNIPPET_RENDER_H
 #define PHYSX_SNIPPET_RENDER_H
 
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+
 #include "PxPhysicsAPI.h"
 #include "foundation/PxPreprocessor.h"
 
@@ -47,11 +50,21 @@
 #error platform not supported.
 #endif
 #include <string>
-
-extern std::string display_text;
+#include <vector>
 
 namespace Snippets
 {
+	using Vector2 = physx::PxVec2;
+	using Vector4 = physx::PxVec4;
+struct Text {
+	Vector2 pos;
+	Vector4 color;
+	std::string text;
+
+	Text(Vector2 pos, std::string text, Vector4 color = {1,1,1,1}) : text(text), pos(pos), color(color) {};
+};
+static std::vector<Text*> texts = std::vector<Text*>();
+
 void setupDefaultWindow(const char* name);
 void setupDefaultRenderState();
 
@@ -59,6 +72,9 @@ void startRender(const physx::PxVec3& cameraEye, const physx::PxVec3& cameraDir,
 void renderShape(const physx::PxShape& shape, const physx::PxTransform& transform, const physx::PxVec4& color);
 void renderActors(physx::PxRigidActor** actors, const physx::PxU32 numActors, bool shadows = false, const physx::PxVec4 & color = physx::PxVec4(0.0f, 0.75f, 0.0f, 1.0f));
 void finishRender();
+int addText(physx::PxVec2 pos, std::string, Vector4 color = {1,1,1,1});
+void updateText(int id, std::string newText);
+void removeText(int id);
 void drawText(const std::string& text, int x, int y);
 }
 

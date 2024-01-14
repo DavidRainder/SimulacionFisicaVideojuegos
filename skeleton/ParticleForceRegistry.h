@@ -28,7 +28,7 @@ public:
 		emplace(p, fG);
 	}
 
-	void deleteParticleRegistry(T* p) {
+	void deleteParticleFromRegistry(T* p) {
 		erase(p); // i have changed the multimap parameters to make this method 
 				  // much more efficient (O(logN) rather than O(N));
 	}

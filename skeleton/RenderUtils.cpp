@@ -6,7 +6,6 @@
 #include "core.hpp"
 #include "RenderUtils.hpp"
 
-
 using namespace physx;
 
 extern void initPhysics(bool interactive);

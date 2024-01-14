@@ -232,7 +232,6 @@ void renderGeometry(const PxGeometryHolder& h, bool wireframe =false)
 
 namespace Snippets
 {
-
 namespace
 {
 void reshapeCallback(int width, int height)
@@ -250,7 +249,7 @@ void setupDefaultWindow(const char *name)
 
 	glutInit(&argc, argv);
 	
-	glutInitWindowSize(512, 512);
+	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	glutInitDisplayMode(GLUT_RGB|GLUT_DOUBLE|GLUT_DEPTH);
 	int mainHandle = glutCreateWindow(name);
 	glutSetWindow(mainHandle);
@@ -267,14 +266,14 @@ void setupDefaultRenderState()
 	glEnable(GL_COLOR_MATERIAL);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendFunc(GL_ZERO, GL_SRC_COLOR);
-	//glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 
 	// Setup lighting
 	glEnable(GL_LIGHTING);
-	PxReal ambientColor[]	= { 0.0f, 0.1f, 0.2f, 0.0f };
-	PxReal diffuseColor[]	= { 1.0f, 1.0f, 1.0f, 0.0f };		
-	PxReal specularColor[]	= { 0.0f, 0.0f, 0.0f, 0.0f };		
-	PxReal position[]		= { 100.0f, 100.0f, 400.0f, 1.0f };		
+	PxReal ambientColor[] = { 0.0f, 0.1f, 0.2f, 0.0f };
+	PxReal diffuseColor[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+	PxReal specularColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	PxReal position[] = { 100.0f, 100.0f, 400.0f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientColor);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseColor);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, specularColor);
@@ -282,14 +281,34 @@ void setupDefaultRenderState()
 	glEnable(GL_LIGHT0);
 }
 
+int addText(physx::PxVec2 pos, std::string text, Vector4 color) {
+	int num = texts.size();
+	texts.push_back(new Text(pos,text, color));
+	return num;
+}
+
+void updateText(int id, std::string newText) {
+	if(texts[id] != nullptr)texts[id]->text = newText;
+}
+
+void removeText(int id) {
+	delete texts[id];
+	texts[id] = nullptr;
+}
 
 void startRender(const PxVec3& cameraEye, const PxVec3& cameraDir, PxReal clipNear, PxReal clipFar)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_BLEND);
-	
+
 	// Display text
-	glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
+	glDisable(GL_LIGHTING);
+	for (auto it : texts) {
+		if (it == nullptr) continue;
+		glColor3f(it->color.x, it->color.y, it->color.z);
+		drawText(it->text, it->pos.x, it->pos.y);
+		glColor3f(1,1,1);
+	}
+	glEnable(GL_LIGHTING);
 
 	// Setup camera
 	glMatrixMode(GL_PROJECTION);
@@ -326,6 +345,8 @@ void renderShape(const PxShape& shape, const PxTransform& transform, const PxVec
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	assert(glGetError() == GL_NO_ERROR);
+
+	glColor4f(1, 1, 1, 1);
 }
 
 void renderActors(PxRigidActor** actors, const PxU32 numActors, bool shadows, const PxVec4 & color)
@@ -389,17 +410,17 @@ void drawText(const std::string& text, int x, int y)
 	double* matrix = new double[16];
 	glGetDoublev(GL_PROJECTION_MATRIX, matrix);
 	glLoadIdentity();
-	glOrtho(0, 512, 0, 512, -5, 5);
+	glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, -5, 5);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glPushMatrix();
-	//glLoadIdentity();
 	glRasterPos2i(x, y);
 
 	int length = text.length();
 
 	for (int i = 0; i < length; i++) {
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (int)text[i]);
+		if (text[i] == '\n') { y -= 20; glRasterPos2i(x, y); }
+		else glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (int)text[i]);
 	}
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);

@@ -2,14 +2,17 @@
 #include "DroppingObjectsManager.h"
 #include <iostream>
 
-DroppingObjectsManager::DroppingObjectsManager(physx::PxScene* scene, physx::PxPhysics* physics, Vector3 pos, float time, int seed) :
+DroppingObjectsManager::DroppingObjectsManager(physx::PxScene* scene, physx::PxPhysics* physics, ParticleSystem<RigidSolid, RigidSolid_config>* particleSys
+	, Vector3 pos, float time, int seed) : particleSys(particleSys),
 	position(pos), objectPosition(pos), moveDir(Vector3(0, 0, 0)), gScene(scene), gPhysics(physics), timeToBuild(time),
 	_bb(Point(-5 + pos.x,1.5f,-5 + pos.z), Point(5 + pos.x,10000000,5 + pos.z)) {
 
 	avaliablePieces = std::vector<int>(maxPieces);
 	srand(seed);
 
-	for (int i = 0; i < 4; ++i) {
+	if (pos.z < 0) camOffset = 0;
+	else camOffset = 4;
+	for (int i = camOffset; i < 4 + camOffset; ++i) {
 		cameraPositions[i] += pos;
 	}
 
@@ -19,15 +22,23 @@ DroppingObjectsManager::DroppingObjectsManager(physx::PxScene* scene, physx::PxP
 	}
 
 	platform = new RigidSolid(gScene, gPhysics, *Models::Platform[1]);
-	platform->setPos(Vector3(pos.x, platform->getHeight()/2, pos.z));
+	float posOffset = 1.0f;
+	platform->setPos(Vector3(pos.x, platform->getHeight()/2 + posOffset, pos.z));
+
+	position.y += posOffset;
 	
 	canBuild = false;
 	stopTimer();
 }
 
+DroppingObjectsManager::~DroppingObjectsManager() {
+
+}
+
+
 void DroppingObjectsManager::StartGame() {
 	canBuild = true;
-	SetCamera(cameraPositions[0], cameraDirections[0]);
+	SetCamera(cameraPositions[camOffset], cameraDirections[camOffset], true);
 	currentCameraPosition = 0;
 	generateRandomObject(position);
 	restartTimer();
@@ -35,8 +46,8 @@ void DroppingObjectsManager::StartGame() {
 
 int DroppingObjectsManager::numObjectsStillStanding() {
 	int num = 0;
-	for (auto it : static_pieces) {
-		if(_bb.insideBoundingBox((*it).solid->getPos()))
+	for (auto it : dynamic_pieces) {
+		if(_bb.insideBoundingBox((*it).getPos()))
 			num++;
 	}
 	return num;
@@ -46,22 +57,22 @@ void DroppingObjectsManager::handleRotation(int dir) {
 	if (currentObject == nullptr) return;
 	if (dir > 0) dir = 1;
 	else dir = -1;
-	currentObject->rotate(dir*90, Vector3(0, 1, 0));
+	currentObject->rotate(dir*90, rotation_axis[currentRotation]);
 }
 
 void DroppingObjectsManager::keyPressed(unsigned char key, physx::PxTransform Camera) {
 	switch (key) {
 	case 'w':
-		moveDir += moveDirections[currentCameraPosition%2];
+		moveDir += moveDirections[currentCameraPosition%2 + camOffset];
 		break;
 	case 's':
-		moveDir += moveDirections[(currentCameraPosition + 1) % 2];
+		moveDir += moveDirections[(currentCameraPosition + 1) % 2 + camOffset];
 		break;
 	case 'a':
-		moveDir += moveDirections[(currentCameraPosition) % 2 + 2];
+		moveDir += moveDirections[(currentCameraPosition) % 2 + 2 + camOffset];
 		break;
 	case 'd':
-		moveDir += moveDirections[(currentCameraPosition + 1) % 2 + 2];
+		moveDir += moveDirections[(currentCameraPosition + 1) % 2 + 2 + camOffset];
 		break;
 	case 'z':
 		moveDir.y += cameraUpMovement;
@@ -75,24 +86,27 @@ void DroppingObjectsManager::keyPressed(unsigned char key, physx::PxTransform Ca
 	case 'e': 
 		handleRotation(-1);
 		break;
+	case 'r':
+		currentRotation = (currentRotation + 1) % 3;
+		break;
 	case ' ':
 		drop();
 		break;
 	case '1':
 		currentCameraPosition = 0;
-		SetCamera(cameraPositions[0], cameraDirections[0]);
+		SetCamera(cameraPositions[0 + camOffset], cameraDirections[0 + camOffset]);
 		break;
 	case '2':
 		currentCameraPosition = 3;
-		SetCamera(cameraPositions[1], cameraDirections[1]);
+		SetCamera(cameraPositions[1 + camOffset], cameraDirections[1 + camOffset]);
 		break;
 	case '3':
 		currentCameraPosition = 1;
-		SetCamera(cameraPositions[2], cameraDirections[2]);
+		SetCamera(cameraPositions[2 + camOffset], cameraDirections[2 + camOffset]);
 		break;
 	case '4':
 		currentCameraPosition = 2;
-		SetCamera(cameraPositions[3], cameraDirections[3]);
+		SetCamera(cameraPositions[3 + camOffset], cameraDirections[3 + camOffset]);
 		break;
 	case 'l':
 		switchToDynamicPieces();
@@ -173,17 +187,22 @@ void DroppingObjectsManager::drop() {
 void DroppingObjectsManager::switchToDynamicPieces() {
 	delete currentObject;
 	currentObject = nullptr;
+	list<RigidSolid*> solids;
 	for (auto it = static_pieces.begin(); it != static_pieces.end(); ++it) {
 
 		static_piece_info* _info = *it;
 		RigidSolid* newSolid = new RigidSolid(gScene, gPhysics, *Models::dynamic_dropped_solids[_info->modelNum]);
 		newSolid->setPos(_info->p);
 		newSolid->setRotation(_info->q);
+		solids.push_back(newSolid);
 		dynamic_pieces.push_back(newSolid);
+
 
 		delete _info->solid;
 		_info->solid = nullptr;
 	}
+	particleSys->addParticles(solids);
+	particleSys->addParticlesToRegistry(solids);
 
 	canBuild = false;
 	timeToBuildEnded = true;
@@ -220,7 +239,6 @@ void DroppingObjectsManager::stopTimer() {
 void DroppingObjectsManager::turnTimeHandler(double t) {
 	if (!timerActivated) return;
 	timer += t;
-	std::cout << timer << '\n';
 	if (!timeToBuildEnded && timer >= timeToBuild) {
 		timeToBuildEnded = true;
 		switchToDynamicPieces();

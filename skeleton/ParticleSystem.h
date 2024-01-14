@@ -23,14 +23,19 @@ private:
 	std::unordered_map<string, ParticleGenerator<T, Model_Config>*> _particleGeneratorByName;
 	physx::PxScene* scene;
 
+	int numParticles = 0;
+
 	std::list<ForceGenerator<T>*> _forceGenerators;
 	ParticleForceRegistry<T>* _pFR;
 	std::list<SpringForceGenerator<T>*> _springGenerators;
 public:
 	ParticleSystem(physx::PxScene* _scene) : _pFR(new ParticleForceRegistry<T>()), scene(_scene) {};
+	ParticleSystem(physx::PxScene* _scene, ParticleForceRegistry<T>* pFR) : scene(_scene) {
+		_pFR = pFR;
+	};
 	~ParticleSystem() {
 		for (auto it = _particles.begin(); it != _particles.end();) {
-			_pFR->deleteParticleRegistry((*it));
+			if(_pFR != nullptr) _pFR->deleteParticleFromRegistry((*it));
 			delete (*it);
 			*it = nullptr;
 			it = _particles.erase(it);
@@ -59,7 +64,7 @@ public:
 			else {
 				if ((*it)->generatesOnDeath())
 					addGenerator((*it)->getPG());
-				_pFR->deleteParticleRegistry((*it));
+				_pFR->deleteParticleFromRegistry((*it));
 				delete (*it);
 				*it = nullptr;
 				it = _particles.erase(it);
@@ -82,6 +87,7 @@ public:
 		for (auto it : _forceGenerators) {
 			it->updateTime(t);
 		}
+		numParticles = _particles.size();
 	}
 
 	void addGenerator(ParticleGenerator<T, Model_Config>* _pG) { _particleGenerators.push_back(_pG); _particleGeneratorByName[_pG->getName()] = _pG;
@@ -102,63 +108,10 @@ public:
 			}
 		}
 	}
+	
+	void addParticles(list<T*> particles) {
+		_particles.splice(_particles.end(), particles);
+	}
 
 	ParticleGenerator<T, Model_Config>* getGenerator(string name) { return _particleGeneratorByName[name]; };
-
-	void generateSpring() {
-		// 2 particles
-		Particle_config model = *Models::Springs[0];
-		model.vel = { 0,0,0 };
-		model.pos = Vector3(25, 50, 0);
-		Particle* p1 = new Particle(nullptr, model);
-		model = *Models::Springs[1];
-		model.pos = Vector3(25, 70, 0);
-		Particle* p2 = new Particle(nullptr, model);
-		SpringForceGenerator<T>* _spring1 = new SpringForceGenerator<T>(1, 10, p2);
-		_pFR->addRegistry(_spring1, p1);
-		SpringForceGenerator<T>* _spring2 = new SpringForceGenerator<T>(1, 10, p1);
-		_pFR->addRegistry(_spring2, p2);
-		_forceGenerators.push_back(_spring1);
-		_forceGenerators.push_back(_spring2);
-		_springGenerators.push_back(_spring1);
-		_springGenerators.push_back(_spring2);
-		_particles.push_back(p1);
-		_particles.push_back(p2);
-
-		// fixed
-		model = *Models::Springs[2];
-		model.pos = { 50, 65, 0 };
-		Particle* p3 = new Particle(nullptr, model);
-		AnchoredSpringFG<T>* _aSpring = new AnchoredSpringFG<T>(1, 30, { 50,75,0 });
-		_pFR->addRegistry(_aSpring, p3);
-		_particles.push_back(p3);
-		_forceGenerators.push_back(_aSpring);
-		_springGenerators.push_back(_aSpring);
-
-		// Bouyancy
-		model = *Models::Springs[3];
-		model.pos = { 0, 10 ,0 };
-		Particle* p4 = new Particle(nullptr, model);
-		model = *Models::Springs[4];
-		model.pos = { 30, 10 ,0 };
-		Particle* p5 = new Particle(nullptr, model);
-		model = *Models::Springs[5];
-		model.pos = { -30, 10 ,0 };
-		Particle* p6 = new Particle(nullptr, model);
-		_particles.push_back(p4);
-		_particles.push_back(p5);
-		_particles.push_back(p6);
-
-		BouyancyForceGenerator<T>* _water = new BouyancyForceGenerator<T>(0, 1000);
-		_forceGenerators.push_back(_water);
-		_pFR->addRegistry(_water, p4);
-		_pFR->addRegistry(_water, p5);
-		_pFR->addRegistry(_water, p6);
-	}
-
-	void changeConstantSpring(double k) {
-		for (auto it : _springGenerators) {
-			it->setK(k);
-		}
-	}
 };

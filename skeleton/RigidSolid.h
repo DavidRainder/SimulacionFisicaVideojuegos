@@ -40,13 +40,6 @@ public:
 		constructorAux(scene, physics, _shape, pos, vel, density, scale, color);
 	}
 
-	~RigidSolid() {
-		if (_rI != nullptr) _rI->release();
-		_rI = nullptr;
-		if (_actor != nullptr) _actor->release();
-		_actor = nullptr;
-	}
-
 	void addForce(Vector3 force) {
 		if(_type == DYNAMIC) _body->addForce(force);
 	}
@@ -129,6 +122,8 @@ public:
 		else return .0f;
 	}
 
+	inline physx::PxActor* getActor() { return _actor; }
+
 	void Destroy() { destroy = true; }
 
 	void integrate(double t) {
@@ -142,9 +137,10 @@ public:
 	Vector3 halfExtents() { return Vector3(width, height, length); }
 	Vector3 extents() { return Vector3(width * 2, height * 2, length * 2); }
 
-	float getWidth() { return width * 2; }
-	float getHeight() { return height * 2; }
-	float getLength() { return length * 2; }
+	inline float getWidth() { return width * 2; }
+	inline float getHeight() { return height * 2; }
+	inline float getLength() { return length * 2; }
+	inline float getVolume() { return getWidth() * getHeight() * getLength(); }
 
 private:
 
@@ -240,4 +236,12 @@ private:
 
 	ParticleGenerator<RigidSolid, RigidSolid_config>* _pG;
 	Solid_Type _type;
+public:
+	~RigidSolid() {
+		if (_rI != nullptr) _rI->release();
+		_rI = nullptr;
+		if (_actor != nullptr) _actor->release();
+		_actor = nullptr;
+	}
+
 };
