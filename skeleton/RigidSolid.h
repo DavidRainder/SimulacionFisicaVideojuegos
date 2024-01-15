@@ -142,6 +142,26 @@ public:
 	inline float getLength() { return length * 2; }
 	inline float getVolume() { return getWidth() * getHeight() * getLength(); }
 
+	void clearForces() {
+		if (_type == DYNAMIC) {
+			_body->clearForce(physx::PxForceMode::eIMPULSE);
+			_body->clearForce(physx::PxForceMode::eACCELERATION);
+			_body->clearForce(physx::PxForceMode::eFORCE);
+			_body->clearForce(physx::PxForceMode::eVELOCITY_CHANGE);
+			_body->clearTorque(physx::PxForceMode::eFORCE);
+			_body->clearTorque(physx::PxForceMode::eVELOCITY_CHANGE);
+			_body->clearTorque(physx::PxForceMode::eACCELERATION);
+			_body->clearTorque(physx::PxForceMode::eIMPULSE);
+			// clearSpeeds();
+		}
+	}
+	void clearSpeeds() {
+		if (_type == DYNAMIC) {
+			_body->setLinearVelocity(Vector3(0, 0, 0));
+			_body->setAngularVelocity(Vector3(0, 0, 0));
+		}
+	}
+
 private:
 
 	float width, height, length;
@@ -178,7 +198,7 @@ private:
 			height = 1;
 			physx::PxBoxGeometry box(width, height, length);
 			physx::PxMaterial* mMaterial;
-			mMaterial = physics->createMaterial(1, 1, -1);
+			mMaterial = physics->createMaterial(0, 0, -1);
 			shape = CreateShape(box, mMaterial);
 		}
 		else if (_shape == SMALL_PIECE) {
@@ -190,7 +210,7 @@ private:
 		}
 		else if (_shape == MID_PIECE) {
 			width = height = scale; 
-			length = scale*2;
+			length = scale*3;
 			physx::PxBoxGeometry box(width, height, length);
 			physx::PxMaterial* mMaterial;
 			mMaterial = physics->createMaterial(10000, 10000, -1);
@@ -198,7 +218,7 @@ private:
 		}
 		else if (_shape == LONG_PIECE) {
 			width = height = scale;
-			length = scale*3;
+			length = scale*5;
 			physx::PxBoxGeometry box(width, height, length);
 			physx::PxMaterial* mMaterial;
 			mMaterial = physics->createMaterial(10000, 10000, -1);

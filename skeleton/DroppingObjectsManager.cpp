@@ -127,6 +127,7 @@ void DroppingObjectsManager::undoDrop() {
 		modelNum = _piece->modelNum;
 		static_pieces.erase(--static_pieces.end());
 		currentPieces--;
+		maxPieces--;
 	}
 }
 
@@ -210,21 +211,21 @@ void DroppingObjectsManager::switchToDynamicPieces() {
 }
 
 void DroppingObjectsManager::switchToStaticPieces() {
-	int i = 0;
-	for (auto it = dynamic_pieces.begin(); it != dynamic_pieces.end() && i < static_pieces.size();) {
+	//int i = 0;
+	//for (auto it = dynamic_pieces.begin(); it != dynamic_pieces.end() && i < static_pieces.size();) {
 
-		static_piece_info* _info = static_pieces[i];
-		RigidSolid* newSolid = new RigidSolid(gScene, gPhysics, *Models::static_dropping_solids[_info->modelNum]);
-		newSolid->setPos((*it)->getPos());
-		newSolid->setRotation((*it)->getGlobalPose().q);
-		_info->solid = newSolid;
+	//	static_piece_info* _info = static_pieces[i];
+	//	RigidSolid* newSolid = new RigidSolid(gScene, gPhysics, *Models::static_dropping_solids[_info->modelNum]);
+	//	newSolid->setPos((*it)->getPos());
+	//	newSolid->setRotation((*it)->getGlobalPose().q);
+	//	_info->solid = newSolid;
 
-		delete (*it);
-		(*it) = nullptr;
-		it = dynamic_pieces.erase(it);
+	//	delete (*it);
+	//	(*it) = nullptr;
+	//	it = dynamic_pieces.erase(it);
 
-		++i;
-	}
+	//	++i;
+	//}
 }
 
 void DroppingObjectsManager::restartTimer() {
@@ -262,6 +263,7 @@ void DroppingObjectsManager::moveHandler() {
 	if (!canMove) return;
 	moveDir *= _lastWidth;
 	moveDir.y *= 0.5f;
+	moveDir *= 1.05f;
 	position += moveDir;
 	if (!_bb.insideBoundingBox(position)) position -= moveDir;
 	moveDir = Vector3(0, 0, 0);

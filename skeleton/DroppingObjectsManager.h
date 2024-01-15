@@ -78,8 +78,6 @@ private:
 
 	int camOffset = 2;
 
-	float _objectUpSpeed = 0.0001f;
-
 	bool canMove = true;
 
 	std::vector<int> avaliablePieces;

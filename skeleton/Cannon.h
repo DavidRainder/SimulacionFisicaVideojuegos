@@ -32,7 +32,7 @@ public:
 
 	void keyPressed(unsigned char key, const physx::PxTransform& camera);
 
-	void update(double t);
+	bool update(double t);
 
 	inline bool hasEndedCannonPhase() {
 		return ended;

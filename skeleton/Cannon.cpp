@@ -23,7 +23,7 @@ FiringCannon::~FiringCannon() {
 	}
 }
 
-void FiringCannon::update(double t) {
+bool FiringCannon::update(double t) {
 	for (auto it = firedProjectiles.begin(); it != firedProjectiles.end();) {
 		if (!(*it)->getDestroy()) {
 			(*it)->integrate(t);
@@ -44,6 +44,7 @@ void FiringCannon::update(double t) {
 			ended = true;
 		}
 	}
+	return timerActivated;
 }
 
 void FiringCannon::startCounter() {
@@ -53,7 +54,7 @@ void FiringCannon::startCounter() {
 
 void FiringCannon::shoot() {
 	if (numShots >= maxShots) return;
-	Vector3 dir = GetCamera()->getDir();
+	Vector3 dir = GetCamera()->getDir().getNormalized();
 	Vector3 pos = GetCamera()->getEye();
 	RigidSolid* cannonBall = new RigidSolid(scene, physics, *model);
 	cannonBall->setPos(pos);

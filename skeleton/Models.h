@@ -50,9 +50,9 @@ namespace Models {
 	};
 
 	static std::vector<RigidSolid_config*> dynamic_dropped_solids{
-		new RigidSolid_config(0.1f, DYNAMIC, SMALL_PIECE, -1, 1.0f, Vector4(0, 0, 0.3, 1.f)),
-		new RigidSolid_config(1.f, DYNAMIC, MID_PIECE, -1, 1.0f, Vector4(0.3, 0, 0, 1.f)),
-		new RigidSolid_config(10.f, DYNAMIC, LONG_PIECE, -1, 1.0f, Vector4(0, 0.3, 0, 1.f)),
+		new RigidSolid_config(1, DYNAMIC, SMALL_PIECE, -1, 1.0f, Vector4(0, 0, 0.3, 1.f)),
+		new RigidSolid_config(1, DYNAMIC, MID_PIECE, -1, 1.0f, Vector4(0.3, 0, 0, 1.f)),
+		new RigidSolid_config(1, DYNAMIC, LONG_PIECE, -1, 1.0f, Vector4(0, 0.3, 0, 1.f)),
 	};
 
 	static std::vector<RigidSolid_config*> Solid{

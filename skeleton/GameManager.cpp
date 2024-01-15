@@ -62,7 +62,7 @@ void GameManager::generatePlayers() {
 		Vector3 playerPos = Vector3(x, 3, z);
 		player->dropMngr = new DroppingObjectsManager(scene, physics, solidSys, playerPos, timeToBuild, seed);
 		player->cannon = new FiringCannon(scene, physics, Models::Solid_Projectiles[0], Vector3(playerPos.x, 4.5f, 0)
-			, Vector3(0, 0, playerPos.z).getNormalized(), 6000);
+			, Vector3(0, 0, playerPos.z).getNormalized(), 15000);
 		player->setParticleSystem(particleSys, solidSys);
 		_players.push_back(player);
 	}
@@ -153,7 +153,6 @@ void GameManager::NextPlayer() {
 	}
 }
 
-
 void GameManager::updateOnBuildTexts() {
 	auto drop = _players[currentPlayer]->dropMngr;
 	float _numTime = drop->getTimeLeftToBuild();
@@ -177,6 +176,13 @@ void GameManager::update(double t) {
 		if (!_players[currentPlayer]->hasEndedBuildPhase()) {
 			updateOnBuildTexts();
 			_players[currentPlayer]->updateDrop(t);
+			for (int i = 0; i < numPlayers; ++i) {
+				auto list = _players[i]->dropMngr->DynamicPieces();
+				for (auto it : list) {
+					it->clearForces();
+					if (i != currentPlayer) it->clearSpeeds();
+				}
+			}
 		}
 		else if (currentPlayer != numPlayers - 1) {
 			NextPlayer();
@@ -186,8 +192,26 @@ void GameManager::update(double t) {
 		}
 		break;
 	case Cannon:
-		if (!_players[currentPlayer]->hasEndedCannonPhase())
-			_players[currentPlayer]->updateCannon(t);
+		if (!_players[currentPlayer]->hasEndedCannonPhase()) {
+			if (!_players[currentPlayer]->updateCannon(t)) {
+				for (int i = currentPlayer; i < numPlayers; ++i) {
+					auto list = _players[i]->dropMngr->DynamicPieces();
+					for (auto it : list) {
+						it->clearSpeeds();
+						it->clearForces();
+					}
+				}
+			}
+			else {
+				for (int i = currentPlayer + 1; i < numPlayers; ++i) {
+					auto list = _players[i]->dropMngr->DynamicPieces();
+					for (auto it : list) {
+						it->clearForces();
+					}
+				}
+			}
+
+		}
 		else {
 			if (currentPlayer != numPlayers - 1) {
 				NextPlayer();

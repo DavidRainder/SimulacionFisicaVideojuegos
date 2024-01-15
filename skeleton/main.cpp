@@ -70,7 +70,7 @@ void initManagers() {
 	particle_rgst = new ParticleForceRegistry<Particle>();
 	particleSys = new ParticleSystem<Particle, Particle_config>(gScene, particle_rgst);
 	solidSys = new ParticleSystem<RigidSolid, RigidSolid_config>(gScene, solid_rgst);
-	BouyancyForceGenerator<RigidSolid>* water_gen = new BouyancyForceGenerator<RigidSolid>(1.5f, 1.0f);
+	BouyancyForceGenerator<RigidSolid>* water_gen = new BouyancyForceGenerator<RigidSolid>(0.25f, 1.0f);
 	solidSys->addForceGenerator(water_gen);
 	GravityForceGenerator* gravityForce = new GravityForceGenerator(Vector3(0, -9.8f, 0));
 	particleSys->addForceGenerator(gravityForce);

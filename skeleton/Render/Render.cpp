@@ -255,6 +255,8 @@ void setupDefaultWindow(const char *name)
 	glutSetWindow(mainHandle);
 	glutReshapeFunc(reshapeCallback);
 	
+	glutFullScreen();
+
 	delete[] namestr;
 }
 
